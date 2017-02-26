@@ -1,1 +1,0 @@
-gunicorn --bind [::]:4000 app:app
