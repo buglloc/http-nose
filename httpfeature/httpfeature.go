@@ -22,6 +22,7 @@ type Features struct {
 	replaceProvidedHeaders   *ReplaceProvidedHeaders
 	absoluteRequestUri       *AbsoluteRequestUri
 	headerTransformations    *HeaderTransformations
+	pathTransformations      *RequestUriTransformations
 }
 
 func NewFeatures(client httpclient.Client, baseRequest httpclient.Request, baseResponse httpclient.Response) (*Features) {
@@ -186,6 +187,18 @@ func (f *Features) GetHeaderTransformations() *HeaderTransformations {
 	return f.headerTransformations
 }
 
+
+func (f *Features) GetRequestUriTransformations() *RequestUriTransformations {
+	if f.pathTransformations == nil {
+		r := &RequestUriTransformations{
+			BaseFeature: f.newBaseFeature(),
+		}
+		r.Collect()
+		f.pathTransformations = r
+	}
+	return f.pathTransformations
+}
+
 func (f *Features) Collect() []Feature {
 	return []Feature{
 		f.GetSupportedMethods(),
@@ -202,6 +215,7 @@ func (f *Features) Collect() []Feature {
 		f.GetHeaderValueIgnoreSymbols(),
 		f.GetAbsoluteRequestUri(),
 		f.GetHeaderTransformations(),
+		f.GetRequestUriTransformations(),
 	}
 }
 
