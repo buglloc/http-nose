@@ -21,6 +21,7 @@ type Features struct {
 	headerValueIgnoreSymbols *HeaderValueIgnoreSymbols
 	replaceProvidedHeaders   *ReplaceProvidedHeaders
 	absoluteRequestUri       *AbsoluteRequestUri
+	headerTransformations    *HeaderTransformations
 }
 
 func NewFeatures(client httpclient.Client, baseRequest httpclient.Request, baseResponse httpclient.Response) (*Features) {
@@ -174,6 +175,17 @@ func (f *Features) GetAbsoluteRequestUri() *AbsoluteRequestUri {
 	return f.absoluteRequestUri
 }
 
+func (f *Features) GetHeaderTransformations() *HeaderTransformations {
+	if f.headerTransformations == nil {
+		r := &HeaderTransformations{
+			BaseFeature: f.newBaseFeature(),
+		}
+		r.Collect()
+		f.headerTransformations = r
+	}
+	return f.headerTransformations
+}
+
 func (f *Features) Collect() []Feature {
 	return []Feature{
 		f.GetSupportedMethods(),
@@ -189,6 +201,7 @@ func (f *Features) Collect() []Feature {
 		f.GetHeaderNameIgnoreSymbols(),
 		f.GetHeaderValueIgnoreSymbols(),
 		f.GetAbsoluteRequestUri(),
+		f.GetHeaderTransformations(),
 	}
 }
 

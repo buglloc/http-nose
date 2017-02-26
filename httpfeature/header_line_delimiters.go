@@ -7,7 +7,7 @@ import (
 
 type HeaderLineDelimiters struct {
 	BaseFeature
-	Strings []string
+	Delims []string
 }
 
 func (f *HeaderLineDelimiters) Name() string {
@@ -15,11 +15,11 @@ func (f *HeaderLineDelimiters) Name() string {
 }
 
 func (f *HeaderLineDelimiters) ToString() string {
-	return PrintableStrings(f.Strings)
+	return PrintableStrings(f.Delims)
 }
 
 func (f *HeaderLineDelimiters) Collect() error {
-	f.Strings, _ = f.collectSymbols()
+	f.Delims, _ = f.collectSymbols()
 	return nil
 }
 
