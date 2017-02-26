@@ -85,8 +85,10 @@ func (r *Request) BuildRequestLine(delim []byte) []byte {
 	res = append(res, []byte(r.Method)...)
 	res = append(res, delim...)
 	res = append(res, []byte(r.RequestURI)...)
-	res = append(res, delim...)
-	res = append(res, []byte(r.Proto)...)
+	if len(r.Proto) > 0 {
+		res = append(res, delim...)
+		res = append(res, []byte(r.Proto)...)
+	}
 	return res
 }
 
