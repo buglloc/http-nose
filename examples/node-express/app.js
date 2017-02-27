@@ -16,11 +16,13 @@ app.use(function(req, res) {
 		'Method': req.method,
 		'RequestURI': req.originalUrl,
 		'Path': req.path,
-		'Args': req.query,
+		'Args': Object.keys(req.query).map((key) => {
+            return `${key}=${req.query[key]}`;
+        }).join('&'),
 		'Headers': Object.keys(req.headers).map((key) => {
-			return {'Name': key, 'Value': req.headers[key]}
+			return {'Name': key, 'Value': req.headers[key]};
 		}),
-		'Body': req.body,
+		'Body': req.body.length ? req.body.toString() : '',
 		'Host': req.hostname
 	}
 
