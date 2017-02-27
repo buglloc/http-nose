@@ -3,8 +3,9 @@ package httpclient
 import (
 	"net"
 	"time"
+	"net/http"
+	"bufio"
 	"log"
-	"github.com/buglloc/http-nose/tcp"
 )
 
 const timeout = 10
@@ -29,17 +30,20 @@ func (c *Client) MakeRawRequest(r []byte) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	message, err := tcp.ReadAll(conn)
+	br := bufio.NewReader(conn)
+	httpResp, err := http.ReadResponse(br, nil)
 	if err != nil {
-		log.Print("Failed to read response: ", err)
+		//log.Print("Failed to read response: ", err)
+		//log.Print("Request: ", string(r))
 		return nil, err
 	}
 
-	resp, err := ParseResponse(message)
+	response, err := NewFromHttpResponse(httpResp)
 	if err != nil {
 		log.Print("Failed to parse response: ", err)
+		log.Print("Request: ", string(r))
 		return nil, err
 	}
 
-	return resp, nil
+	return response, nil
 }
