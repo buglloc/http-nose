@@ -292,7 +292,7 @@ ngx_http_nose_headers(ngx_http_request_t *r, u_char *dst)
                 + sizeof("}") - 1
                 ;
 
-            if (i + 1 < part->nelts)
+            if (part->next != NULL || i + 1 < part->nelts)
                 len += sizeof(", ") - 1;
 
         } else {
@@ -307,7 +307,7 @@ ngx_http_nose_headers(ngx_http_request_t *r, u_char *dst)
                 quoted_string(dst, header[i].value.data, header[i].value.len);
                 *dst++ = '}';
 
-                if (i + 1 < part->nelts)
+                if (part->next != NULL || i + 1 < part->nelts)
                     ngx_copy_literal(dst, ", ");
         }
     }
