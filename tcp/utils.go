@@ -1,16 +1,16 @@
 package tcp
 
 import (
-	"bufio"
+	//"bufio"
 	"io"
 )
 
 func ReadAll(rd io.Reader) ([]byte, error) {
-	reader := bufio.NewReader(rd)
+	//reader := bufio.NewReader(rd)
 	message := make([]byte, 0)
 	for {
 		buf := make([]byte, 8192)
-		received, err := reader.Read(buf)
+		received, err := rd.Read(buf)
 		if err != nil && err != io.EOF {
 			return nil, err
 		}

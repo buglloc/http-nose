@@ -7,10 +7,8 @@ import (
 	"encoding/json"
 	"strconv"
 	"strings"
-	"github.com/buglloc/http-nose/tcp"
-	//"github.com/buglloc/http-nose/httpclient"
 	"io"
-	//"bytes"
+	"github.com/buglloc/http-nose/tcp"
 	"github.com/buglloc/http-nose/cmd/trace-server/parser"
 )
 
@@ -28,15 +26,17 @@ func parseMessage(rd io.Reader) (*parser.Request, error) {
 		return nil, err
 	}
 
-	//if request.BodyReader != nil {
-	//	var buf bytes.Buffer
-	//	_, err = io.Copy(&buf, request.BodyReader)
-	//	if err != nil {
-	//		return nil, err
-	//	}
-	//	request.Body = buf.String()
-	//	request.Raw += request.Body
-	//}
+	if request.BodyReader != nil {
+		if request.BodyReader.Buffered() != 0 {
+			rest, err := tcp.ReadAll(request.BodyReader)
+			if err == nil {
+				request.Body = string(rest)
+				request.Raw += request.Body
+			}
+
+		}
+		request.BodyReader = nil
+	}
 
 	return request, nil
 }

@@ -1,9 +1,7 @@
 package httpclient
 
 import (
-	"io"
 	"strings"
-	"bytes"
 )
 
 type Request struct {
@@ -22,13 +20,6 @@ type Header struct {
 	Name  string
 	Value string
 }
-
-const (
-	REQUEST_STATE_REQUEST_LINE = 0
-	REQUEST_STATE_HEADER       = 1
-	REQUEST_STATE_BODY         = 2
-	REQUEST_STATE_END          = 3
-)
 
 func (r *Request) Clone() *Request {
 	return &Request{
