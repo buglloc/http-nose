@@ -23,6 +23,6 @@ _testmain.go
 *.test
 *.prof
 .idea
-cmd/*/*
-!cmd/*/
-!cmd/*/*.go
+cmd/**
+!cmd/**/
+!cmd/**/*.go
