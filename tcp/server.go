@@ -3,6 +3,8 @@ package tcp
 import (
 	"net"
 	"log"
+	"io"
+	"time"
 )
 
 // Client holds info about connection
@@ -15,21 +17,15 @@ type Client struct {
 type server struct {
 	clients                  []*Client
 	address                  string // Address to open connection: localhost:9999
+	timeout                  time.Duration
 	onNewClientCallback      func(c *Client)
 	onClientConnectionClosed func(c *Client, err error)
-	onNewMessage             func(c *Client, message []byte)
+	onNewMessage             func(c *Client, rd io.Reader)
 }
 
 // Read client data from channel
 func (c *Client) listen() {
-	message, err := ReadAll(c.conn)
-	if err != nil {
-		c.conn.Close()
-		c.Server.onClientConnectionClosed(c, err)
-		return
-	}
-
-	c.Server.onNewMessage(c, message)
+	c.Server.onNewMessage(c, c.conn)
 }
 
 // Send text message to client
@@ -63,7 +59,7 @@ func (s *server) OnClientConnectionClosed(callback func(c *Client, err error)) {
 }
 
 // Called when Client receives new message
-func (s *server) OnNewMessage(callback func(c *Client, message []byte)) {
+func (s *server) OnNewMessage(callback func(c *Client, rd io.Reader)) {
 	s.onNewMessage = callback
 }
 
@@ -77,6 +73,11 @@ func (s *server) Listen() {
 
 	for {
 		conn, _ := listener.Accept()
+		err := conn.SetReadDeadline(time.Now().Add(s.timeout))
+		if err != nil {
+			log.Fatal("SetReadDeadline failed:", err)
+		}
+
 		client := &Client{
 			conn:   conn,
 			Server: s,
@@ -87,14 +88,15 @@ func (s *server) Listen() {
 }
 
 // Creates new tcp server instance
-func New(address string) *server {
+func New(address string, timeout int) *server {
 	log.Println("Creating server with address", address)
 	server := &server{
 		address: address,
+		timeout: time.Duration(5 * time.Second),
 	}
 
 	server.OnNewClient(func(c *Client) {})
-	server.OnNewMessage(func(c *Client, message []byte) {})
+	server.OnNewMessage(func(c *Client, rd io.Reader) {})
 	server.OnClientConnectionClosed(func(c *Client, err error) {})
 
 	return server
