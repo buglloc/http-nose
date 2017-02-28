@@ -2,28 +2,34 @@ package httpfeature
 
 import (
 	"github.com/buglloc/http-nose/httpclient"
+	"log"
 )
 
 type Features struct {
-	client                   httpclient.Client
-	baseRequest              httpclient.Request
-	baseResponse             httpclient.Response
-	supportedMethods         *SupportedMethods
-	multilineHeadersSupport  *MultilineHeadersSupport
-	providedHeaders          *ProvidedHeaders
-	duplicateHeadersAction   *DuplicateHeaders
-	duplicateHost            *DuplicateHost
-	headerDelimiters         *HeaderDelimiters
-	headerLineDelimiters     *HeaderLineDelimiters
-	headerNameSymbols        *HeaderNameSymbols
-	headerValueSymbols       *HeaderValueSymbols
-	headerNameIgnoreSymbols  *HeaderNameIgnoreSymbols
-	headerValueIgnoreSymbols *HeaderValueIgnoreSymbols
-	replaceProvidedHeaders   *ReplaceProvidedHeaders
-	absoluteRequestUri       *AbsoluteRequestUri
-	headerTransformations    *HeaderTransformations
-	pathTransformations      *RequestUriTransformations
-	supportedVersions        *SupportedVersions
+	client                       httpclient.Client
+	baseRequest                  httpclient.Request
+	baseResponse                 httpclient.Response
+	supportedMethods             *SupportedMethods
+	multilineHeadersSupport      *MultilineHeadersSupport
+	providedHeaders              *ProvidedHeaders
+	providedHeadersOrder         *ProvidedHeadersOrder
+	duplicateHeadersAction       *DuplicateHeaders
+	duplicateHost                *DuplicateHost
+	headerDelimiters             *HeaderDelimiters
+	headerLineDelimiters         *HeaderLineDelimiters
+	headerNameSymbols            *HeaderNameSymbols
+	headerValueSymbols           *HeaderValueSymbols
+	headerNameIgnoreSymbols      *HeaderNameIgnoreSymbols
+	headerValueIgnoreSymbols     *HeaderValueIgnoreSymbols
+	replaceProvidedHeaders       *ReplaceProvidedHeaders
+	absoluteRequestUri           *AbsoluteRequestUri
+	headerTransformations        *HeaderTransformations
+	pathTransformations          *RequestUriTransformations
+	supportedVersions            *SupportedVersions
+	maximumHeadersCount          *MaximumHeadersCount
+	maximumHeaderLen             *MaximumHeaderLen
+	headerCountOverflowAction    *HeaderCountOverflowAction
+	maximumDuplicateHeadersCount *MaximumDuplicateHeadersCount
 }
 
 func NewFeatures(client httpclient.Client, baseRequest httpclient.Request, baseResponse httpclient.Response) (*Features) {
@@ -36,6 +42,7 @@ func NewFeatures(client httpclient.Client, baseRequest httpclient.Request, baseR
 
 func (f *Features) GetSupportedMethods() *SupportedMethods {
 	if f.supportedMethods == nil {
+		log.Print("Colecting SupportedMethods")
 		r := &SupportedMethods{
 			BaseFeature: f.newBaseFeature(),
 		}
@@ -47,6 +54,7 @@ func (f *Features) GetSupportedMethods() *SupportedMethods {
 
 func (f *Features) GetMultilineHeadersSupport() *MultilineHeadersSupport {
 	if f.multilineHeadersSupport == nil {
+		log.Print("Colecting MultilineHeadersSupport")
 		r := &MultilineHeadersSupport{
 			BaseFeature: f.newBaseFeature(),
 		}
@@ -58,6 +66,7 @@ func (f *Features) GetMultilineHeadersSupport() *MultilineHeadersSupport {
 
 func (f *Features) GetProvidedHeaders() *ProvidedHeaders {
 	if f.providedHeaders == nil {
+		log.Print("Colecting ProvidedHeaders")
 		r := &ProvidedHeaders{
 			BaseFeature: f.newBaseFeature(),
 		}
@@ -67,8 +76,21 @@ func (f *Features) GetProvidedHeaders() *ProvidedHeaders {
 	return f.providedHeaders
 }
 
+func (f *Features) GetProvidedHeadersOrder() *ProvidedHeadersOrder {
+	if f.providedHeadersOrder == nil {
+		log.Print("Colecting ProvidedHeadersOrder")
+		r := &ProvidedHeadersOrder{
+			BaseFeature: f.newBaseFeature(),
+		}
+		r.Collect()
+		f.providedHeadersOrder = r
+	}
+	return f.providedHeadersOrder
+}
+
 func (f *Features) GetDuplicateHeaders() *DuplicateHeaders {
 	if f.duplicateHeadersAction == nil {
+		log.Print("Colecting DuplicateHeaders")
 		r := &DuplicateHeaders{
 			BaseFeature: f.newBaseFeature(),
 		}
@@ -80,6 +102,7 @@ func (f *Features) GetDuplicateHeaders() *DuplicateHeaders {
 
 func (f *Features) GetDuplicateHost() *DuplicateHost {
 	if f.duplicateHost == nil {
+		log.Print("Colecting DuplicateHost")
 		r := &DuplicateHost{
 			BaseFeature: f.newBaseFeature(),
 		}
@@ -91,6 +114,7 @@ func (f *Features) GetDuplicateHost() *DuplicateHost {
 
 func (f *Features) GetHeaderDelimiters() *HeaderDelimiters {
 	if f.headerDelimiters == nil {
+		log.Print("Colecting HeaderDelimiters")
 		r := &HeaderDelimiters{
 			BaseFeature: f.newBaseFeature(),
 		}
@@ -102,6 +126,7 @@ func (f *Features) GetHeaderDelimiters() *HeaderDelimiters {
 
 func (f *Features) GetHeaderLineDelimiters() *HeaderLineDelimiters {
 	if f.headerLineDelimiters == nil {
+		log.Print("Colecting HeaderLineDelimiters")
 		r := &HeaderLineDelimiters{
 			BaseFeature: f.newBaseFeature(),
 		}
@@ -113,6 +138,7 @@ func (f *Features) GetHeaderLineDelimiters() *HeaderLineDelimiters {
 
 func (f *Features) GetHeaderNameSymbols() *HeaderNameSymbols {
 	if f.headerNameSymbols == nil {
+		log.Print("Colecting HeaderNameSymbols")
 		r := &HeaderNameSymbols{
 			BaseFeature: f.newBaseFeature(),
 		}
@@ -124,6 +150,7 @@ func (f *Features) GetHeaderNameSymbols() *HeaderNameSymbols {
 
 func (f *Features) GetHeaderValueSymbols() *HeaderValueSymbols {
 	if f.headerValueSymbols == nil {
+		log.Print("Colecting HeaderValueSymbols")
 		r := &HeaderValueSymbols{
 			BaseFeature: f.newBaseFeature(),
 		}
@@ -135,6 +162,7 @@ func (f *Features) GetHeaderValueSymbols() *HeaderValueSymbols {
 
 func (f *Features) GetHeaderNameIgnoreSymbols() *HeaderNameIgnoreSymbols {
 	if f.headerNameIgnoreSymbols == nil {
+		log.Print("Colecting HeaderNameIgnoreSymbols")
 		r := &HeaderNameIgnoreSymbols{
 			BaseFeature: f.newBaseFeature(),
 		}
@@ -146,6 +174,7 @@ func (f *Features) GetHeaderNameIgnoreSymbols() *HeaderNameIgnoreSymbols {
 
 func (f *Features) GetHeaderValueIgnoreSymbols() *HeaderValueIgnoreSymbols {
 	if f.headerValueIgnoreSymbols == nil {
+		log.Print("Colecting HeaderValueIgnoreSymbols")
 		r := &HeaderValueIgnoreSymbols{
 			BaseFeature: f.newBaseFeature(),
 		}
@@ -157,6 +186,7 @@ func (f *Features) GetHeaderValueIgnoreSymbols() *HeaderValueIgnoreSymbols {
 
 func (f *Features) GetReplaceProvidedHeaders() *ReplaceProvidedHeaders {
 	if f.replaceProvidedHeaders == nil {
+		log.Print("Colecting ReplaceProvidedHeaders")
 		r := &ReplaceProvidedHeaders{
 			BaseFeature: f.newBaseFeature(),
 		}
@@ -168,6 +198,7 @@ func (f *Features) GetReplaceProvidedHeaders() *ReplaceProvidedHeaders {
 
 func (f *Features) GetAbsoluteRequestUri() *AbsoluteRequestUri {
 	if f.absoluteRequestUri == nil {
+		log.Print("Colecting AbsoluteRequestUri")
 		r := &AbsoluteRequestUri{
 			BaseFeature: f.newBaseFeature(),
 		}
@@ -179,6 +210,7 @@ func (f *Features) GetAbsoluteRequestUri() *AbsoluteRequestUri {
 
 func (f *Features) GetHeaderTransformations() *HeaderTransformations {
 	if f.headerTransformations == nil {
+		log.Print("Colecting HeaderTransformations")
 		r := &HeaderTransformations{
 			BaseFeature: f.newBaseFeature(),
 		}
@@ -190,6 +222,7 @@ func (f *Features) GetHeaderTransformations() *HeaderTransformations {
 
 func (f *Features) GetRequestUriTransformations() *RequestUriTransformations {
 	if f.pathTransformations == nil {
+		log.Print("Colecting RequestUriTransformations")
 		r := &RequestUriTransformations{
 			BaseFeature: f.newBaseFeature(),
 		}
@@ -201,6 +234,7 @@ func (f *Features) GetRequestUriTransformations() *RequestUriTransformations {
 
 func (f *Features) GetSupportedVersions() *SupportedVersions {
 	if f.supportedVersions == nil {
+		log.Print("Colecting SupportedVersions")
 		r := &SupportedVersions{
 			BaseFeature: f.newBaseFeature(),
 		}
@@ -210,6 +244,54 @@ func (f *Features) GetSupportedVersions() *SupportedVersions {
 	return f.supportedVersions
 }
 
+func (f *Features) GetHeaderCountOverflowAction() *HeaderCountOverflowAction {
+	if f.headerCountOverflowAction == nil {
+		log.Print("Colecting HeaderCountOverflowAction")
+		r := &HeaderCountOverflowAction{
+			BaseFeature: f.newBaseFeature(),
+		}
+		r.Collect()
+		f.headerCountOverflowAction = r
+	}
+	return f.headerCountOverflowAction
+}
+
+func (f *Features) GetMaximumHeadersCount() *MaximumHeadersCount {
+	if f.maximumHeadersCount == nil {
+		log.Print("Colecting MaximumHeadersCount")
+		r := &MaximumHeadersCount{
+			BaseFeature: f.newBaseFeature(),
+		}
+		r.Collect()
+		f.maximumHeadersCount = r
+	}
+	return f.maximumHeadersCount
+}
+
+func (f *Features) GetMaximumHeaderLen() *MaximumHeaderLen {
+	if f.maximumHeaderLen == nil {
+		log.Print("Colecting MaximumHeaderLen")
+		r := &MaximumHeaderLen{
+			BaseFeature: f.newBaseFeature(),
+		}
+		r.Collect()
+		f.maximumHeaderLen = r
+	}
+	return f.maximumHeaderLen
+}
+
+func (f *Features) GetMaximumDuplicateHeadersCount() *MaximumDuplicateHeadersCount {
+	if f.maximumDuplicateHeadersCount == nil {
+		log.Print("Colecting MaximumDuplicateHeadersCount")
+		r := &MaximumDuplicateHeadersCount{
+			BaseFeature: f.newBaseFeature(),
+		}
+		r.Collect()
+		f.maximumDuplicateHeadersCount = r
+	}
+	return f.maximumDuplicateHeadersCount
+}
+
 func (f *Features) Collect() []Feature {
 	return []Feature{
 		f.GetSupportedVersions(),
@@ -217,6 +299,7 @@ func (f *Features) Collect() []Feature {
 		f.GetMultilineHeadersSupport(),
 		f.GetProvidedHeaders(),
 		f.GetReplaceProvidedHeaders(),
+		f.GetProvidedHeadersOrder(),
 		f.GetDuplicateHeaders(),
 		f.GetDuplicateHost(),
 		f.GetHeaderDelimiters(),
@@ -228,6 +311,10 @@ func (f *Features) Collect() []Feature {
 		f.GetAbsoluteRequestUri(),
 		f.GetHeaderTransformations(),
 		f.GetRequestUriTransformations(),
+		f.GetMaximumHeaderLen(),
+		f.GetMaximumHeadersCount(),
+		f.GetHeaderCountOverflowAction(),
+		f.GetMaximumDuplicateHeadersCount(),
 	}
 }
 
