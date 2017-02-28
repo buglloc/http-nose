@@ -8,7 +8,10 @@ import (
 	"strconv"
 	"strings"
 	"github.com/buglloc/http-nose/tcp"
-	"github.com/buglloc/http-nose/httpclient"
+	//"github.com/buglloc/http-nose/httpclient"
+	"io"
+	//"bytes"
+	"github.com/buglloc/http-nose/cmd/trace-server/parser"
 )
 
 func formatResponce(body string, contentType string) string {
@@ -18,47 +21,72 @@ func formatResponce(body string, contentType string) string {
 	return head + body
 }
 
+func parseMessage(rd io.Reader) (*parser.Request, error) {
+	request := parser.NewRequest()
+	err := request.Parse(rd)
+	if err != nil {
+		return nil, err
+	}
+
+	//if request.BodyReader != nil {
+	//	var buf bytes.Buffer
+	//	_, err = io.Copy(&buf, request.BodyReader)
+	//	if err != nil {
+	//		return nil, err
+	//	}
+	//	request.Body = buf.String()
+	//	request.Raw += request.Body
+	//}
+
+	return request, nil
+}
+
 func main() {
 	portFlag := flag.Int("port", 9000, "Port to bind")
 	traceFlag := flag.Bool("trace", false, "Trace mode (analog of HTTP TRACE method)")
 	flag.Parse()
 
-	server := tcp.New(fmt.Sprintf(":%d", *portFlag))
+	server := tcp.New(fmt.Sprintf(":%d", *portFlag), 2)
 
 	server.OnNewClient(func(c *tcp.Client) {
 		log.Printf("New client: %s", c.Conn().RemoteAddr())
 	})
 
-	server.OnNewMessage(func(c *tcp.Client, message []byte) {
+	server.OnNewMessage(func(c *tcp.Client, rd io.Reader) {
 		log.Printf("New message from: %s", c.Conn().RemoteAddr())
+
+		req, err := parseMessage(rd)
+		if err != nil {
+			log.Println("Failed to parse request: ", err)
+			c.Close()
+			return
+		}
 
 		contentType := "application/json"
 		var body string
 		if *traceFlag {
 			contentType = "text/plain"
-			body = strconv.Quote(string(message))
+			body = strconv.Quote(req.Raw)
 			body = strings.Replace(body, "\\n", "\\n\n", -1)
 			body = strings.Trim(body, "\"")
 		} else {
-			parsed, err := httpclient.ParseRequest(message)
-			if err != nil {
-				log.Print("Can't parse request:", err)
-				c.Close()
-			}
-			for _, h := range parsed.Headers {
+			for _, h := range req.Headers {
 				if strings.ToLower(h.Name) == "host" {
-					parsed.Host = h.Value
+					req.Host = h.Value
 					break
 				}
 			}
-			encoded, err := json.MarshalIndent(parsed, "", "  ")
+			encoded, err := json.MarshalIndent(req, "", "  ")
 			if err != nil {
-				log.Print("Failed to encode:", err)
+				log.Println("Failed to encode: ", err)
 				c.Close()
 			}
 			body = string(encoded)
 		}
-		c.Send(formatResponce(body, contentType))
+		err = c.Send(formatResponce(body, contentType))
+		if err != nil {
+			log.Println("Failed to send response: ", err)
+		}
 		c.Close()
 	})
 
