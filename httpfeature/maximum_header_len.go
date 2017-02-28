@@ -1,0 +1,69 @@
+package httpfeature
+
+import (
+	"strings"
+	"fmt"
+)
+
+const MIN_HEADER_LEN = 128
+const MAX_HEADER_LEN = 10 * 1024
+
+type MaximumHeaderLen struct {
+	BaseFeature
+	NameLen int
+	ValueLen int
+}
+
+func (f *MaximumHeaderLen) Name() string {
+	return "Maximum header length"
+}
+
+func (f *MaximumHeaderLen) ToString() string {
+	return fmt.Sprintf("Name: %s; Value: %s",
+		PrintableBytes(f.NameLen), PrintableBytes(f.ValueLen))
+}
+
+func (f *MaximumHeaderLen) Collect() error {
+	c := make(chan float64)
+	go func() {
+		c <- GoldenSectionSearch(MIN_HEADER_LEN, MAX_HEADER_LEN, 2, f.goldenNameSize)
+	}()
+	go func() {
+		c <- GoldenSectionSearch(MIN_HEADER_LEN, MAX_HEADER_LEN, 2, f.golderValueSize)
+	}()
+	f.NameLen = int(<- c)
+	f.ValueLen = int(<- c)
+	return nil
+}
+
+func (f *MaximumHeaderLen) goldenNameSize(size float64) float64 {
+	if size == MIN_HEADER_LEN {
+		return size
+	}
+
+	req := f.BaseRequest.Clone()
+	headerName := strings.Repeat("a", int(size))
+	req.AddHeader(headerName, "a")
+	resp, err := f.Client.MakeRequest(req)
+	if err != nil || resp.Status != 200 {
+		return size - 1
+	}
+
+	return 0
+}
+
+func (f *MaximumHeaderLen) golderValueSize(size float64) float64 {
+	if size == MIN_HEADER_LEN {
+		return size
+	}
+
+	req := f.BaseRequest.Clone()
+	headerValue:= strings.Repeat("a", int(size))
+	req.AddHeader("a", headerValue)
+	resp, err := f.Client.MakeRequest(req)
+	if err != nil || resp.Status != 200 {
+		return size - 1
+	}
+
+	return 0
+}
