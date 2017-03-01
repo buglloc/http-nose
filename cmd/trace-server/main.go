@@ -66,7 +66,7 @@ func main() {
 
 		contentType := "application/json"
 		var body string
-		if *traceFlag {
+		if *traceFlag || strings.Contains(req.Args, "trace=1") {
 			contentType = "text/plain"
 			body = strconv.Quote(req.Raw)
 			body = strings.Replace(body, "\\n", "\\n\n", -1)
