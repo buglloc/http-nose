@@ -43,10 +43,12 @@ func parseMessage(rd io.Reader) (*parser.Request, error) {
 
 func main() {
 	portFlag := flag.Int("port", 9000, "Port to bind")
+	readTimeoutFlag := flag.Int("timeout", 2, "Request read timeout (in seconds)")
 	traceFlag := flag.Bool("trace", false, "Trace mode (analog of HTTP TRACE method)")
 	flag.Parse()
 
-	server := tcp.New(fmt.Sprintf(":%d", *portFlag), 2)
+	server := tcp.New(fmt.Sprintf(":%d", *portFlag), *readTimeoutFlag)
+
 
 	server.OnNewClient(func(c *tcp.Client) {
 		log.Printf("New client: %s", c.Conn().RemoteAddr())
