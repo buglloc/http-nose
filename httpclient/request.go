@@ -98,15 +98,15 @@ func (r *Request) BuildRequestLine(delim []byte) []byte {
 	return res
 }
 
-func (r *Request) BuildRequestUri() []byte {
+func (r *Request) BuildRequestUri() string {
 	if r.RequestURI != "" {
-		return []byte(r.RequestURI)
+		return r.RequestURI
 	}
-	res := make([]byte, 0)
-	res = append(res, []byte(r.Path)...)
+
+	res := r.Path
 	if r.Args != "" {
-		res = append(res, '?')
-		res = append(res, []byte(r.Args)...)
+		res += "?"
+		res += r.Args
 	}
 	return res
 }

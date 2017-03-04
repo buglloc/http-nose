@@ -24,7 +24,7 @@ type Features struct {
 	replaceProvidedHeaders       *ReplaceProvidedHeaders
 	absoluteRequestUri           *AbsoluteRequestUri
 	headerTransformations        *HeaderTransformations
-	pathTransformations          *RequestUriTransformations
+	requestLineTransformations   *RequestLineTransformations
 	supportedVersions            *SupportedVersions
 	maximumHeadersCount          *MaximumHeadersCount
 	maximumHeaderLen             *MaximumHeaderLen
@@ -220,16 +220,16 @@ func (f *Features) GetHeaderTransformations() *HeaderTransformations {
 	return f.headerTransformations
 }
 
-func (f *Features) GetRequestUriTransformations() *RequestUriTransformations {
-	if f.pathTransformations == nil {
-		log.Print("Colecting RequestUriTransformations")
-		r := &RequestUriTransformations{
+func (f *Features) GetRequestLineTransformations() *RequestLineTransformations {
+	if f.requestLineTransformations == nil {
+		log.Print("Colecting RequestLineTransformations")
+		r := &RequestLineTransformations{
 			BaseFeature: f.newBaseFeature(),
 		}
 		r.Collect()
-		f.pathTransformations = r
+		f.requestLineTransformations = r
 	}
-	return f.pathTransformations
+	return f.requestLineTransformations
 }
 
 func (f *Features) GetSupportedVersions() *SupportedVersions {
@@ -310,7 +310,7 @@ func (f *Features) Collect() []Feature {
 		f.GetHeaderValueIgnoreSymbols(),
 		f.GetAbsoluteRequestUri(),
 		f.GetHeaderTransformations(),
-		f.GetRequestUriTransformations(),
+		f.GetRequestLineTransformations(),
 		f.GetMaximumHeaderLen(),
 		f.GetMaximumHeadersCount(),
 		f.GetHeaderCountOverflowAction(),

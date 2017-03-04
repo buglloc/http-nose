@@ -6,70 +6,79 @@ import (
 	"sync"
 )
 
-type RequestUriTransformations struct {
+type RequestLineTransformations struct {
 	BaseFeature
-	Transforms []string
+	UriTransforms []string
+	PathTransforms []string
 }
 
-func (f *RequestUriTransformations) Name() string {
-	return "RequestUri transformations"
+func (f *RequestLineTransformations) Name() string {
+	return "RequestLine transformations"
 }
 
-func (f *RequestUriTransformations) ToString() string {
-	if len(f.Transforms) == 0 {
+func (f *RequestLineTransformations) ToString() string {
+	return fmt.Sprintf("Uri: %s; Path: %s",
+		f.formatTransform(f.UriTransforms), f.formatTransform(f.PathTransforms))
+}
+
+func (f *RequestLineTransformations) formatTransform(trans []string) string {
+	if len(trans) == 0 {
 		return "none"
 	}
-	return strings.Join(f.Transforms, ", ")
+	return strings.Join(trans, ", ")
 }
 
-func (f *RequestUriTransformations) Collect() error {
-	prefix := f.BaseRequest.Path
-	f.Transforms = f.check([]string{
-		prefix + "/trimed?",
-		prefix + "//some/merge",
-		prefix + "/%2F%2Fmerge/escaped",
-		prefix + "/some/../normalize",
-		prefix + "/some%2f%2e%2e%2fnormalize/escaped",
-		prefix + "/path?#fragment",
-		prefix + "/is/Case/Sensitive?FoO=Bar",
-	}, true)
+func (f *RequestLineTransformations) Collect() error {
+	f.UriTransforms, f.PathTransforms = f.check([][]string{
+		{"merge//slashes", ""},
+		{"merge%2F%2Fescaped", ""},
+		{"simple/../normalize", ""},
+		{"escapeddot/%2e%2e/normalize", ""},
+		{"escapedall%2f%2e%2e%2fnormalize", ""},
+		{"fragment", "#fragment"},
+		{"is/Case/Sensetive", "FoO=Bar"},
+	})
 
 	return nil
 }
 
-func (f *RequestUriTransformations) check(toCheck []string, isUri bool) []string {
-	result := make([]string, 0)
+func (f *RequestLineTransformations) check(toCheck [][]string) ([]string, []string) {
+	uriTrans := make([]string, 0)
+	pathTrans := make([]string, 0)
 	mu := &sync.Mutex{}
 	sem := make(chan bool, concurrency)
 	for _, ch := range toCheck {
 		sem <- true
-		go func(ch string) {
+		go func(path, args string) {
 			defer func() { <-sem }()
 
 			req := f.BaseRequest.Clone()
-			req.RequestURI = ch
+			req.Path += path
+			req.Args = path
+
 			resp, err := f.Client.MakeRequest(req)
 			if err != nil || resp.Status != 200 {
 				return
 			}
 
-			var same bool
-			if isUri {
-				same = len(resp.RequestURI) > 0 && resp.RequestURI != ch
-			} else {
-				same = len(resp.Path) > 0 && resp.Path != ch
-			}
+			requestPath := req.Path
+			requestUri := req.BuildRequestUri()
 
-			if same {
+			if resp.RequestURI != "" && requestUri != resp.RequestURI {
 				mu.Lock()
-				result = append(result, fmt.Sprintf("%q -> %q", ch, resp.RequestURI))
+				uriTrans = append(uriTrans, fmt.Sprintf("%q -> %q", requestUri, resp.RequestURI))
 				mu.Unlock()
 			}
-		}(ch)
+			if resp.Path != "" && requestPath != resp.Path {
+				mu.Lock()
+				pathTrans = append(pathTrans, fmt.Sprintf("%q -> %q", req.Path, resp.Path))
+				mu.Unlock()
+			}
+		}(ch[0], ch[1])
 	}
 
 	for i := 0; i < cap(sem); i++ {
 		sem <- true
 	}
-	return result
+	return uriTrans, pathTrans
 }
