@@ -2,7 +2,6 @@ package httpfeature
 
 import (
 	"strings"
-	"fmt"
 )
 
 type AbsoluteRequestUri struct {
@@ -47,7 +46,6 @@ func (f *AbsoluteRequestUri) Collect() error {
 	req.RequestURI = targetRequestUri
 	req.Host = headerHost
 
-	fmt.Println(string(req.Build(nil, nil)))
 	resp, err := f.Client.MakeRequest(req)
 	if err != nil || resp.Status != 200 {
 		f.Supported = false
