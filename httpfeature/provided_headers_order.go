@@ -1,7 +1,6 @@
 package httpfeature
 
 import (
-	"strings"
 	"fmt"
 )
 
@@ -37,7 +36,6 @@ func (f *ProvidedHeadersOrder) Collect() error {
 	req.AddHeader(headerName, rand)
 	resp, err := f.Client.MakeRequest(req)
 	if err == nil && resp.Status == 200 {
-		testName := strings.ToLower(headerName)
 		user := false
 		provided := false
 		for _, h := range resp.Headers {
@@ -48,7 +46,7 @@ func (f *ProvidedHeadersOrder) Collect() error {
 					break
 				}
 				provided = true
-			} else if strings.ToLower(h.Name) == testName {
+			} else if h.EqualName(headerName) {
 				if provided {
 					f.After = false
 					f.Before = true

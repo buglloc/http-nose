@@ -29,11 +29,10 @@ func (f *MultilineHeadersSupport) check() bool {
 	if err != nil || resp.Status != 200 {
 		return false
 	}
-	for _, h := range resp.Headers {
-		if strings.ToLower(h.Name) == "x-foo" {
-			if strings.Contains(h.Value, "foo") && strings.Contains(h.Value, "bar") {
-				return true
-			}
+
+	for _, h := range resp.HeadersSlice(("X-Foo")) {
+		if strings.Contains(h.Value, "foo") && strings.Contains(h.Value, "bar") {
+			return true
 		}
 	}
 	return false

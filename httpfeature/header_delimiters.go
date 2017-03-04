@@ -1,7 +1,6 @@
 package httpfeature
 
 import (
-	"strings"
 	"sync"
 )
 
@@ -39,8 +38,8 @@ func (f *HeaderDelimiters) collectSymbols() ([]rune, error) {
 				return
 			}
 
-			for _, h := range resp.Headers {
-				if strings.ToLower(h.Name) == "x-foo" && h.Value == "foo" {
+			for _, h := range resp.HeadersSlice("X-Foo") {
+				if h.Value == "foo" {
 					mu.Lock()
 					symbols = append(symbols, sym)
 					mu.Unlock()

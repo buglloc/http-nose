@@ -1,7 +1,6 @@
 package httpfeature
 
 import (
-	"strings"
 	"fmt"
 )
 
@@ -48,8 +47,8 @@ func (f *HeaderLineDelimiters) check(delim string) bool {
 		return false
 	}
 
-	for _, h := range resp.Headers {
-		if strings.ToLower(h.Name) == "x-bar" && h.Value == "bar" {
+	for _, h := range resp.HeadersSlice("X-Bar") {
+		if h.Value == "bar" {
 			return true
 		}
 	}

@@ -56,18 +56,16 @@ func (f *DuplicateHeaders) check() int {
 	first := false
 	second := false
 	merged := false
-	for _, h := range resp.Headers {
-		if strings.ToLower(h.Name) == "x-foo" {
-			f := strings.Contains(h.Value, "foo1")
-			s := strings.Contains(h.Value, "foo2")
-			if f && s {
-				merged = true
-				break
-			} else if f {
-				first = true
-			} else if s {
-				second = true
-			}
+	for _, h := range resp.HeadersSlice("X-Foo") {
+		f := strings.Contains(h.Value, "foo1")
+		s := strings.Contains(h.Value, "foo2")
+		if f && s {
+			merged = true
+			break
+		} else if f {
+			first = true
+		} else if s {
+			second = true
 		}
 	}
 

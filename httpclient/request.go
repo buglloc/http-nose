@@ -21,6 +21,10 @@ type Header struct {
 	Value string
 }
 
+func (h *Header) EqualName(name string) bool {
+	return NormalizeHeaderName(h.Name) == NormalizeHeaderName(name)
+}
+
 func (r *Request) Clone() *Request {
 	return &Request{
 		Method:     r.Method,
@@ -45,6 +49,17 @@ func (r *Request) RemoveHeader(name string) {
 			r.Headers = append(r.Headers[:i], r.Headers[i+1:]...)
 		}
 	}
+}
+
+func (r *Request) HeadersSlice(name string) []Header {
+	testName := NormalizeHeaderName(name)
+	result := make([]Header, 0, 1)
+	for _, h := range r.Headers {
+		if NormalizeHeaderName(h.Name) == testName {
+			result = append(result, h)
+		}
+	}
+	return result
 }
 
 func (r *Request) Build(lineDelim []byte, headerDelim []byte) []byte {
@@ -95,4 +110,8 @@ func (r *Request) BuildHeaders(delim []byte) [][]byte {
 		res[i] = append(res[i], []byte(h.Value)...)
 	}
 	return res
+}
+
+func NormalizeHeaderName(name string) string {
+	return strings.Trim(strings.ToLower(name), " \r\n")
 }

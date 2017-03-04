@@ -62,15 +62,13 @@ func (f *ReplaceProvidedHeaders) check(name string) int {
 		return REPLACE_PROVIDED_HEADERS_NO
 	}
 
-	testName := strings.ToLower(name)
-	for _, h := range resp.Headers {
-		if strings.ToLower(h.Name) == testName {
-			if h.Value == testValue {
-				return REPLACE_PROVIDED_HEADERS_YES
-			}
-			if strings.Contains(h.Value, testValue) {
-				return REPLACE_PROVIDED_HEADERS_MERGED
-			}
+	for _, h := range resp.HeadersSlice(name) {
+		if h.Value == testValue {
+			return REPLACE_PROVIDED_HEADERS_YES
+		}
+
+		if strings.Contains(h.Value, testValue) {
+			return REPLACE_PROVIDED_HEADERS_MERGED
 		}
 	}
 	return REPLACE_PROVIDED_HEADERS_NO

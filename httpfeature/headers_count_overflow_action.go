@@ -68,10 +68,8 @@ func (f *HeaderCountOverflowAction) check(maximum int) int {
 		return HEADER_COUNT_OVERFLOW_ACTION_BODY
 	}
 
-	for _, h := range resp.Headers {
-		if strings.ToLower(h.Name) == "x-overflow" {
-			return HEADER_COUNT_OVERFLOW_ACTION_NA
-		}
+	for len(resp.HeadersSlice("X-Overflow")) > 0 {
+		return HEADER_COUNT_OVERFLOW_ACTION_NA
 	}
 
 	return HEADER_COUNT_OVERFLOW_ACTION_CUT
