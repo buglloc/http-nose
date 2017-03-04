@@ -2,6 +2,7 @@ package httpfeature
 
 import (
 	"strings"
+	"fmt"
 )
 
 type AbsoluteRequestUri struct {
@@ -37,17 +38,24 @@ func (f *AbsoluteRequestUri) ToString() string {
 
 func (f *AbsoluteRequestUri) Collect() error {
 	req := f.BaseRequest.Clone()
-	req.RemoveHeader("Host")
-	req.RequestURI = "http://host-from-uri/path"
-	req.AddHeader("Host", "host-from-header")
+
+	targetPath := req.Path + "test"
+	uriHost := "host-from-uri." + req.Host
+	headerHost := "host-from-header." + req.Host
+	targetRequestUri := "http://" + uriHost + targetPath
+
+	req.RequestURI = targetRequestUri
+	req.Host = headerHost
+
+	fmt.Println(string(req.Build(nil, nil)))
 	resp, err := f.Client.MakeRequest(req)
 	if err != nil || resp.Status != 200 {
 		f.Supported = false
 	} else {
 		f.Supported = true
-		f.Untouched = resp.RequestURI == "http://host-from-uri/path"
-		f.PickHost = resp.Host == "host-from-uri"
-		f.PickPath = resp.Path == "/path"
+		f.Untouched = resp.RequestURI == targetRequestUri
+		f.PickHost = resp.Host == uriHost
+		f.PickPath = resp.Path == targetPath
 	}
 	return nil
 }

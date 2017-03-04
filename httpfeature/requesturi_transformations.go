@@ -23,14 +23,15 @@ func (f *RequestUriTransformations) ToString() string {
 }
 
 func (f *RequestUriTransformations) Collect() error {
+	prefix := f.BaseRequest.Path
 	f.Transforms = f.check([]string{
-		"/trimed?",
-		"//some/merge",
-		"/%2F%2Fmerge/escaped",
-		"/some/../normalize",
-		"/some%2f%2e%2e%2fnormalize/escaped",
-		"/path?#fragment",
-		"/is/Case/Sensitive?FoO=Bar",
+		prefix + "/trimed?",
+		prefix + "//some/merge",
+		prefix + "/%2F%2Fmerge/escaped",
+		prefix + "/some/../normalize",
+		prefix + "/some%2f%2e%2e%2fnormalize/escaped",
+		prefix + "/path?#fragment",
+		prefix + "/is/Case/Sensitive?FoO=Bar",
 	}, true)
 
 	return nil

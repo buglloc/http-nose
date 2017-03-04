@@ -90,10 +90,23 @@ func (r *Request) BuildRequestLine(delim []byte) []byte {
 	res := make([]byte, 0)
 	res = append(res, []byte(r.Method)...)
 	res = append(res, delim...)
-	res = append(res, []byte(r.RequestURI)...)
+	res = append(res, []byte(r.BuildRequestUri())...)
 	if len(r.Proto) > 0 {
 		res = append(res, delim...)
 		res = append(res, []byte(r.Proto)...)
+	}
+	return res
+}
+
+func (r *Request) BuildRequestUri() []byte {
+	if r.RequestURI != "" {
+		return []byte(r.RequestURI)
+	}
+	res := make([]byte, 0)
+	res = append(res, []byte(r.Path)...)
+	if r.Args != "" {
+		res = append(res, '?')
+		res = append(res, []byte(r.Args)...)
 	}
 	return res
 }
@@ -103,8 +116,12 @@ func (r *Request) BuildHeaders(delim []byte) [][]byte {
 		delim = []byte(":")
 	}
 
-	res := make([][]byte, len(r.Headers))
-	for i, h := range r.Headers {
+	headers := r.Headers
+	if r.Host != "" {
+		headers = append([]Header{{"Host", r.Host}}, r.Headers...)
+	}
+	res := make([][]byte, len(headers))
+	for i, h := range headers {
 		res[i] = append(res[i], []byte(h.Name)...)
 		res[i] = append(res[i], delim...)
 		res[i] = append(res[i], []byte(h.Value)...)

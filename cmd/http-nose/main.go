@@ -18,6 +18,7 @@ func main() {
 	flag.Usage = usage
 	hostFlag := flag.String("host", "localhost", "request host")
 	pathFlag := flag.String("path", "/", "request path")
+	argsFlag := flag.String("args", "", "args")
 	flag.Parse()
 	args := flag.Args()
 
@@ -27,12 +28,11 @@ func main() {
 	}
 
 	baseRequest := httpclient.Request{
-		Method:     "GET",
-		RequestURI: *pathFlag,
-		Proto:      "HTTP/1.0",
-		Headers: []httpclient.Header{
-			{Name: "Host", Value: *hostFlag},
-		},
+		Method: "GET",
+		Path:   *pathFlag,
+		Args:   *argsFlag,
+		Proto:  "HTTP/1.0",
+		Host:   *hostFlag,
 	}
 
 	client := httpclient.Client{Target: args[0]}
