@@ -61,7 +61,7 @@ func (f *RequestLineTransformations) check(toCheck [][]string) ([]string, []stri
 
 			req := f.BaseRequest.Clone()
 			req.Path += path
-			req.Args = path
+			req.Args = args
 
 			resp, err := f.Client.MakeRequest(req)
 			if err != nil || resp.Status != 200 {
@@ -78,7 +78,7 @@ func (f *RequestLineTransformations) check(toCheck [][]string) ([]string, []stri
 			}
 			if resp.Path != "" && requestPath != resp.Path {
 				mu.Lock()
-				pathTrans = append(pathTrans, fmt.Sprintf("%q -> %q", req.Path, resp.Path))
+				pathTrans = append(pathTrans, fmt.Sprintf("%q -> %q", requestPath, resp.Path))
 				mu.Unlock()
 			}
 		}(ch[0], ch[1])
