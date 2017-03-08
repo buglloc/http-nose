@@ -13,7 +13,11 @@ func (f *HeaderDelimiters) Name() string {
 	return "Header name/value delimitiers"
 }
 
-func (f *HeaderDelimiters) ToString() string {
+func (f *HeaderDelimiters) Export() interface{} {
+	return f.Symbols
+}
+
+func (f *HeaderDelimiters) String() string {
 	return PrintableRunes(f.Symbols)
 }
 

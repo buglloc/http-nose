@@ -7,9 +7,10 @@ import (
 )
 
 type Feature interface {
-	Name() string
-	ToString() string
+	Name()    string
 	Collect() error
+	String()  string
+	Export()     interface{}
 }
 
 type BaseFeature struct {

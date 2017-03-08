@@ -14,7 +14,17 @@ func (f *ProvidedHeadersOrder) Name() string {
 	return "Server provided headers order"
 }
 
-func (f *ProvidedHeadersOrder) ToString() string {
+func (f *ProvidedHeadersOrder) Export() interface{} {
+	if ! f.After && ! f.Before {
+		return "N/A"
+	}
+	if f.After {
+		return "After user headers"
+	}
+	return "Before user headers"
+}
+
+func (f *ProvidedHeadersOrder) String() string {
 	if ! f.After && ! f.Before {
 		return "n/a"
 	}

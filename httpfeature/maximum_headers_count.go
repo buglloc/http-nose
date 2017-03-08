@@ -15,7 +15,15 @@ func (f *MaximumHeadersCount) Name() string {
 	return "Maximum headers count"
 }
 
-func (f *MaximumHeadersCount) ToString() string {
+func (f *MaximumHeadersCount) Export() interface{} {
+	if f.Count == -1 {
+		return MAX_HEADERS_COUNT
+	}
+
+	return f.Count
+}
+
+func (f *MaximumHeadersCount) String() string {
 	if f.Count == -1 {
 		return fmt.Sprintf("%d+", MAX_HEADERS_COUNT)
 	}

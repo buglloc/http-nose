@@ -16,7 +16,15 @@ func (f *HeaderTransformations) Name() string {
 	return "Header transformations"
 }
 
-func (f *HeaderTransformations) ToString() string {
+func (f *HeaderTransformations) Export() interface{} {
+	return map[string][]string {
+		"HeaderName": f.HeaderName,
+		"HeaderDelimiter": f.HeaderDelimiter,
+		"HeaderLineDelimiter": f.HeaderLineDelimiter,
+	}
+}
+
+func (f *HeaderTransformations) String() string {
 	result := make([]string, 0)
 	if len(f.HeaderName) > 0 {
 		result = append(result, "HeaderName: " + strings.Join(f.HeaderName, ", "))
@@ -36,7 +44,7 @@ func (f *HeaderTransformations) ToString() string {
 func (f *HeaderTransformations) Collect() error {
 	f.HeaderName = f.checkHeaderName()
 	f.HeaderDelimiter = f.checkHeaderDelimiter(f.Features.GetHeaderDelimiters().Symbols)
-	f.HeaderLineDelimiter = f.checkHeaderLineDelimiter(f.Features.GetHeaderLineDelimiters().Delims)
+	f.HeaderLineDelimiter = f.checkHeaderLineDelimiter(f.Features.GetHeaderLineDelimiters().Symbols)
 	return nil
 }
 

@@ -13,7 +13,15 @@ func (f *HeaderNameIgnoreSymbols) Name() string {
 	return "Header name ignored symbols"
 }
 
-func (f *HeaderNameIgnoreSymbols) ToString() string {
+func (f *HeaderNameIgnoreSymbols) Export() interface{} {
+	return map[string][]rune {
+		"Begin": f.Begin,
+		"Middle": f.Middle,
+		"End": f.End,
+	}
+}
+
+func (f *HeaderNameIgnoreSymbols) String() string {
 	return fmt.Sprintf("begin(%s), middle(%s), end(%s)",
 		PrintableRunes(f.Begin), PrintableRunes(f.Middle), PrintableRunes(f.End))
 }

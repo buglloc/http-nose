@@ -13,7 +13,11 @@ func (f *MultilineHeadersSupport) Name() string {
 	return "Supported multiline headers"
 }
 
-func (f *MultilineHeadersSupport) ToString() string {
+func (f *MultilineHeadersSupport) Export() interface{} {
+	return f.Supported
+}
+
+func (f *MultilineHeadersSupport) String() string {
 	return PrintableBool(f.Supported)
 }
 

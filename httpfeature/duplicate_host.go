@@ -16,15 +16,19 @@ func (f *DuplicateHost) Name() string {
 	return "Duplicate host"
 }
 
-func (f *DuplicateHost) ToString() string {
+func (f *DuplicateHost) Export() interface{} {
+	return f.String()
+}
+
+func (f *DuplicateHost) String() string {
 	if f.Action == DUPLICATE_HOST_FIRST {
-		return "pick first"
+		return "Pick first"
 	} else if f.Action == DUPLICATE_HOST_LAST {
-		return "pick last"
+		return "Pick last"
 	} else if f.Action == DUPLICATE_HOST_NA {
-		return "n/a"
+		return "N/A"
 	}
-	return "unknown"
+	return "Unknown"
 }
 
 func (f *DuplicateHost) Collect() error {

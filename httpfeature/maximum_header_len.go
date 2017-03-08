@@ -18,7 +18,14 @@ func (f *MaximumHeaderLen) Name() string {
 	return "Maximum header length"
 }
 
-func (f *MaximumHeaderLen) ToString() string {
+func (f *MaximumHeaderLen) Export() interface{} {
+	return map[string]int{
+		"Name": f.NameLen,
+		"Value": f.ValueLen,
+	}
+}
+
+func (f *MaximumHeaderLen) String() string {
 	return fmt.Sprintf("Name: %s; Value: %s",
 		PrintableBytes(f.NameLen), PrintableBytes(f.ValueLen))
 }

@@ -15,16 +15,24 @@ func (f *ProvidedHeaders) Name() string {
 	return "Server provided headers"
 }
 
-func (f *ProvidedHeaders) ToString() string {
+func (f *ProvidedHeaders) HeadersStrings() []string {
 	if len(f.Headers) == 0 {
-		return "none"
+		return []string{"none"}
 	}
 
 	result := make([]string, len(f.Headers))
 	for i, h := range f.Headers {
 		result[i] = fmt.Sprintf("%s: %q", h.Name, h.Value)
 	}
-	return strings.Join(result, ", ")
+	return result
+}
+
+func (f *ProvidedHeaders) Export() interface{} {
+	return f.HeadersStrings()
+}
+
+func (f *ProvidedHeaders) String() string {
+	return strings.Join(f.HeadersStrings(), ", ")
 }
 
 func (f *ProvidedHeaders) Collect() error {

@@ -16,7 +16,15 @@ func (f *AbsoluteRequestUri) Name() string {
 	return "Absolute request uri support"
 }
 
-func (f *AbsoluteRequestUri) ToString() string {
+func (f *AbsoluteRequestUri) String() string {
+	return strings.Join(f.features(), ", ")
+}
+
+func (f *AbsoluteRequestUri) Export() interface{} {
+	return f.features()
+}
+
+func (f *AbsoluteRequestUri) features() []string {
 	result := make([]string, 0)
 	if f.Supported {
 		result = append(result, "Supported")
@@ -32,7 +40,8 @@ func (f *AbsoluteRequestUri) ToString() string {
 	} else {
 		result = append(result, "Unsupported")
 	}
-	return strings.Join(result, ", ")
+
+	return result
 }
 
 func (f *AbsoluteRequestUri) Collect() error {

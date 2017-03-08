@@ -6,19 +6,23 @@ import (
 
 type HeaderLineDelimiters struct {
 	BaseFeature
-	Delims []string
+	Symbols []string
 }
 
 func (f *HeaderLineDelimiters) Name() string {
 	return "Header line delimitiers"
 }
 
-func (f *HeaderLineDelimiters) ToString() string {
-	return PrintableStrings(f.Delims)
+func (f *HeaderLineDelimiters) Export() interface{} {
+	return f.Symbols
+}
+
+func (f *HeaderLineDelimiters) String() string {
+	return PrintableStrings(f.Symbols)
 }
 
 func (f *HeaderLineDelimiters) Collect() error {
-	f.Delims, _ = f.collectSymbols()
+	f.Symbols, _ = f.collectSymbols()
 	return nil
 }
 

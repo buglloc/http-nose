@@ -17,7 +17,7 @@ func (f *SupportedVersions) Name() string {
 	return "Supported HTTP versions"
 }
 
-func (f *SupportedVersions) ToString() string {
+func (f *SupportedVersions) Versions() []string {
 	result := make([]string, 0)
 	if (f.Supported & HTTP_VERSION_NONE) != 0 {
 		result = append(result, "None")
@@ -35,7 +35,15 @@ func (f *SupportedVersions) ToString() string {
 		result = append(result, "xxx")
 	}
 
-	return PrintableStrings(result)
+	return result
+}
+
+func (f *SupportedVersions) Export() interface{} {
+	return f.Versions()
+}
+
+func (f *SupportedVersions) String() string {
+	return PrintableStrings(f.Versions())
 }
 
 func (f *SupportedVersions) Collect() error {

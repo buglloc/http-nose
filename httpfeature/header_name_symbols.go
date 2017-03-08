@@ -9,7 +9,11 @@ func (f *HeaderNameSymbols) Name() string {
 	return "Header name symbols"
 }
 
-func (f *HeaderNameSymbols) ToString() string {
+func (f *HeaderNameSymbols) Export() interface{} {
+	return f.Symbols
+}
+
+func (f *HeaderNameSymbols) String() string {
 	return PrintableRunes(f.Symbols)
 }
 

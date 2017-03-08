@@ -21,23 +21,27 @@ func (f *HeaderCountOverflowAction) Name() string {
 	return "Headers count overflow action"
 }
 
-func (f *HeaderCountOverflowAction) ToString() string {
+func (f *HeaderCountOverflowAction) Export() interface{} {
+	return f.String()
+}
+
+func (f *HeaderCountOverflowAction) String() string {
 	if f.Action == HEADER_COUNT_OVERFLOW_ACTION_NA {
-		return "n/a"
+		return "N/A"
 	}
 
 	if f.Action == HEADER_COUNT_OVERFLOW_ACTION_DISALLOWED {
-		return "disallowed"
+		return "Disallowed"
 	}
 
 	if f.Action == HEADER_COUNT_OVERFLOW_ACTION_CUT {
-		return "cut"
+		return "Dropped"
 	}
 
 	if f.Action == HEADER_COUNT_OVERFLOW_ACTION_BODY {
-		return "body"
+		return "Leak to body"
 	}
-	return "unknown"
+	return "Unknown"
 }
 
 func (f *HeaderCountOverflowAction) Collect() error {

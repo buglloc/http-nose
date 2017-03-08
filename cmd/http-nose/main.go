@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"log"
+	"encoding/json"
 	"github.com/buglloc/http-nose/httpclient"
 	"github.com/buglloc/http-nose/httpfeature"
 )
@@ -14,11 +15,25 @@ func usage() {
 	flag.PrintDefaults()
 }
 
+func PrepareFeaturesForJson(features *httpfeature.Features) []map[string]interface{} {
+	result := make([]map[string]interface{}, 0)
+	for _, f := range features.Collect() {
+		result = append(result,
+			map[string]interface{}{
+				"Name": f.Name(),
+				"Value": f.Export(),
+			},
+		)
+	}
+	return result
+}
+
 func main() {
 	flag.Usage = usage
 	hostFlag := flag.String("host", "localhost", "request host")
 	pathFlag := flag.String("path", "/", "request path")
 	argsFlag := flag.String("args", "", "args")
+	formatFlag := flag.String("format", "text", "output format")
 	flag.Parse()
 	args := flag.Args()
 
@@ -42,7 +57,17 @@ func main() {
 	}
 
 	httpfeatures := httpfeature.NewFeatures(client, baseRequest, *baseResponse)
-	for _, f := range httpfeatures.Collect() {
-		fmt.Printf("%s: %s\n", f.Name(), f.ToString())
+	switch *formatFlag {
+	case "text":
+		for _, f := range httpfeatures.Collect() {
+			fmt.Printf("%s: %s\n", f.Name(), f.String())
+		}
+	case "json":
+		preparedFeatures := PrepareFeaturesForJson(httpfeatures)
+		formatted, err := json.Marshal(preparedFeatures)
+		if err != nil {
+			log.Fatal("Failed to encode: ", err)
+		}
+		fmt.Println(string(formatted))
 	}
 }

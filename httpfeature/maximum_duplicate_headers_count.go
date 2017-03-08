@@ -13,10 +13,15 @@ func (f *MaximumDuplicateHeadersCount) Name() string {
 	return "Maximum duplicate headers count"
 }
 
-func (f *MaximumDuplicateHeadersCount) ToString() string {
+func (f *MaximumDuplicateHeadersCount) Export() interface{} {
+	return f.Count
+}
+
+func (f *MaximumDuplicateHeadersCount) String() string {
 	if f.Count == 0 {
-		return "n/a"
+		return "N/A"
 	}
+
 	return fmt.Sprintf("%d", f.Count)
 }
 

@@ -22,21 +22,25 @@ func (f *DuplicateHeaders) Name() string {
 	return "Duplicate headers"
 }
 
-func (f *DuplicateHeaders) ToString() string {
+func (f *DuplicateHeaders) Export() interface{} {
+	return f.String()
+}
+
+func (f *DuplicateHeaders) String() string {
 	if f.Action == DUPLICATE_HEADERS_DISALLOWED {
-		return "disallowed"
+		return "Disallowed"
 	} else if f.Action == DUPLICATE_HEADERS_ALLOWED {
-		return "allowed"
+		return "Allowed"
 	} else if f.Action == DUPLICATE_HEADERS_MERGED {
-		return "merged"
+		return "Merged"
 	} else if f.Action == DUPLICATE_HEADERS_PICK_FIRST {
-		return "pick first"
+		return "Pick first"
 	} else if f.Action == DUPLICATE_HEADERS_PICK_LAST {
-		return "pick last"
+		return "Pick last"
 	} else if f.Action == DUPLICATE_HEADERS_NA {
-		return "n/a"
+		return "N/A"
 	}
-	return "unknown"
+	return "Unknown"
 }
 
 func (f *DuplicateHeaders) Collect() error {

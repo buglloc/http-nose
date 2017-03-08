@@ -16,11 +16,21 @@ func (f *SupportedMethods) Name() string {
 	return "Supported HTTP methods"
 }
 
-func (f *SupportedMethods) ToString() string {
+func (f *SupportedMethods) Export() interface{} {
 	if f.Any {
-		return "any method"
+		return []string{"Any method"}
 	} else if len(f.Methods) == 0 {
-		return "none"
+		return []string{"None"}
+	}
+
+	return f.Methods
+}
+
+func (f *SupportedMethods) String() string {
+	if f.Any {
+		return "Any method"
+	} else if len(f.Methods) == 0 {
+		return "None"
 	}
 
 	return PrintableStrings(f.Methods)

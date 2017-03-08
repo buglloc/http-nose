@@ -16,7 +16,14 @@ func (f *RequestLineTransformations) Name() string {
 	return "RequestLine transformations"
 }
 
-func (f *RequestLineTransformations) ToString() string {
+func (f *RequestLineTransformations) Export() interface{} {
+	return map[string][]string {
+		"Uri": f.UriTransforms,
+		"Path": f.PathTransforms,
+	}
+}
+
+func (f *RequestLineTransformations) String() string {
 	return fmt.Sprintf("Uri: %s; Path: %s",
 		f.formatTransform(f.UriTransforms), f.formatTransform(f.PathTransforms))
 }

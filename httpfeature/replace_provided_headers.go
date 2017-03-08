@@ -20,10 +20,11 @@ func (f *ReplaceProvidedHeaders) Name() string {
 	return "Replace provided headers"
 }
 
-func (f *ReplaceProvidedHeaders) ToString() string {
+func (f *ReplaceProvidedHeaders) HeadersAction() []string {
 	if len(f.Headers) == 0 {
-		return "n/a"
+		return []string{"N/A"}
 	}
+
 	result := make([]string, len(f.Headers))
 	count := 0
 	for name, action := range f.Headers {
@@ -33,15 +34,23 @@ func (f *ReplaceProvidedHeaders) ToString() string {
 		} else if action == REPLACE_PROVIDED_HEADERS_YES {
 			resultAction = "Yes"
 		} else if action == REPLACE_PROVIDED_HEADERS_MERGED {
-			resultAction = "merged"
+			resultAction = "Merged"
 		} else {
-			resultAction = "unknown"
+			resultAction = "Unknown"
 		}
 
 		result[count] = fmt.Sprintf("%s: %s", name, resultAction)
 		count++
 	}
-	return strings.Join(result, ", ")
+	return result
+}
+
+func (f *ReplaceProvidedHeaders) Export() interface{} {
+	return f.HeadersAction()
+}
+
+func (f *ReplaceProvidedHeaders) String() string {
+	return strings.Join(f.HeadersAction(), ", ")
 }
 
 func (f *ReplaceProvidedHeaders) Collect() error {
