@@ -3,9 +3,9 @@ package httpfeature
 const (
 	HTTP_VERSION_NONE = 1 << 0
 	HTTP_VERSION_09   = 1 << 1
-	HTTP_VERSION_10   = 1 << 1
-	HTTP_VERSION_11   = 1 << 1
-	HTTP_VERSION_ANY  = 1 << 1
+	HTTP_VERSION_10   = 1 << 2
+	HTTP_VERSION_11   = 1 << 3
+	HTTP_VERSION_ANY  = 1 << 4
 )
 
 type SupportedVersions struct {
