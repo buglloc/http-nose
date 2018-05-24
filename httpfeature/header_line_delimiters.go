@@ -31,6 +31,7 @@ func (f *HeaderLineDelimiters) collectSymbols() ([]string, error) {
 		"\r",
 		"\n",
 		"\r\n",
+		"\n\r",
 		"\x00",
 	}
 
