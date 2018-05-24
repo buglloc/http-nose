@@ -14,7 +14,7 @@ import (
 
 func formatResponce(body string, contentType string) string {
 	head := fmt.Sprintf(
-		"HTTP/1.1 200 Ok\r\nServer: Trace Server\r\nContent-Type: %s\r\nContent-Length: %d\r\nConnection: close\r\n\r\n",
+		"HTTP/1.1 200 Ok\r\nServer: Trace Server\r\nContent-Type: %s\r\nContent-Length: %d\r\n\r\n",
 		contentType, len(body))
 	return head + body
 }
@@ -45,11 +45,10 @@ func main() {
 	portFlag := flag.Int("port", 9000, "Port to bind")
 	readTimeoutFlag := flag.Int("timeout", 2, "Request read timeout (in seconds)")
 	traceFlag := flag.Bool("trace", false, "Trace mode (analog of HTTP TRACE method)")
+	showReqFlag := flag.Bool("show-req", false, "Print requests to output")
 	flag.Parse()
 
 	server := tcp.New(fmt.Sprintf(":%d", *portFlag), *readTimeoutFlag)
-
-
 	server.OnNewClient(func(c *tcp.Client) {
 		log.Printf("New client: %s", c.Conn().RemoteAddr())
 	})
@@ -66,6 +65,12 @@ func main() {
 
 		contentType := "application/json"
 		var body string
+		if *showReqFlag {
+			body = strconv.Quote(req.Raw)
+			body = strings.Replace(body, "\\n", "\\n\n", -1)
+			body = strings.Trim(body, "\"")
+			fmt.Printf("client: %s\n%s\n", c.Conn().RemoteAddr(), body)
+		}
 		if *traceFlag || strings.Contains(req.Args, "trace=1") {
 			contentType = "text/plain"
 			body = strconv.Quote(req.Raw)
