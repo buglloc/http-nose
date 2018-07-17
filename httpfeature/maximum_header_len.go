@@ -1,8 +1,8 @@
 package httpfeature
 
 import (
-	"strings"
 	"fmt"
+	"strings"
 )
 
 const MIN_HEADER_LEN = 128
@@ -10,7 +10,7 @@ const MAX_HEADER_LEN = 10 * 1024
 
 type MaximumHeaderLen struct {
 	BaseFeature
-	NameLen int
+	NameLen  int
 	ValueLen int
 }
 
@@ -20,7 +20,7 @@ func (f *MaximumHeaderLen) Name() string {
 
 func (f *MaximumHeaderLen) Export() interface{} {
 	return map[string]int{
-		"Name": f.NameLen,
+		"Name":  f.NameLen,
 		"Value": f.ValueLen,
 	}
 }
@@ -38,8 +38,8 @@ func (f *MaximumHeaderLen) Collect() error {
 	go func() {
 		c <- GoldenSectionSearch(MIN_HEADER_LEN, MAX_HEADER_LEN, 2, f.golderValueSize)
 	}()
-	f.NameLen = int(<- c)
-	f.ValueLen = int(<- c)
+	f.NameLen = int(<-c)
+	f.ValueLen = int(<-c)
 	return nil
 }
 
@@ -65,7 +65,7 @@ func (f *MaximumHeaderLen) golderValueSize(size float64) float64 {
 	}
 
 	req := f.BaseRequest.Clone()
-	headerValue:= strings.Repeat("a", int(size))
+	headerValue := strings.Repeat("a", int(size))
 	req.AddHeader("a", headerValue)
 	resp, err := f.Client.MakeRequest(req)
 	if err != nil || resp.Status != 200 {

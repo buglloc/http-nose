@@ -11,6 +11,7 @@ type Features struct {
 	baseResponse                 httpclient.Response
 	supportedMethods             *SupportedMethods
 	multilineHeadersSupport      *MultilineHeadersSupport
+	multilineHeadersContinuation *MultilineHeadersContinuation
 	providedHeaders              *ProvidedHeaders
 	providedHeadersOrder         *ProvidedHeadersOrder
 	duplicateHeadersAction       *DuplicateHeaders
@@ -32,7 +33,7 @@ type Features struct {
 	maximumDuplicateHeadersCount *MaximumDuplicateHeadersCount
 }
 
-func NewFeatures(client httpclient.Client, baseRequest httpclient.Request, baseResponse httpclient.Response) (*Features) {
+func NewFeatures(client httpclient.Client, baseRequest httpclient.Request, baseResponse httpclient.Response) *Features {
 	return &Features{
 		client:       client,
 		baseRequest:  baseRequest,
@@ -62,6 +63,18 @@ func (f *Features) GetMultilineHeadersSupport() *MultilineHeadersSupport {
 		f.multilineHeadersSupport = r
 	}
 	return f.multilineHeadersSupport
+}
+
+func (f *Features) GetMultilineHeadersContinuation() *MultilineHeadersContinuation {
+	if f.multilineHeadersContinuation == nil {
+		log.Print("Colecting MultilineHeadersContinuation")
+		r := &MultilineHeadersContinuation{
+			BaseFeature: f.newBaseFeature(),
+		}
+		r.Collect()
+		f.multilineHeadersContinuation = r
+	}
+	return f.multilineHeadersContinuation
 }
 
 func (f *Features) GetProvidedHeaders() *ProvidedHeaders {
@@ -297,6 +310,7 @@ func (f *Features) Collect() []Feature {
 		f.GetSupportedVersions(),
 		f.GetSupportedMethods(),
 		f.GetMultilineHeadersSupport(),
+		f.GetMultilineHeadersContinuation(),
 		f.GetProvidedHeaders(),
 		f.GetReplaceProvidedHeaders(),
 		f.GetProvidedHeadersOrder(),

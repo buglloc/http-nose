@@ -1,15 +1,16 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
 	"log"
-	"encoding/json"
 	"strconv"
 	"strings"
-	"io"
-	"github.com/buglloc/http-nose/tcp"
+
 	"github.com/buglloc/http-nose/cmd/trace-server/parser"
+	"github.com/buglloc/http-nose/tcp"
 )
 
 func formatResponce(body string, contentType string) string {

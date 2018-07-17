@@ -1,14 +1,14 @@
 package httpfeature
 
 import (
+	"github.com/buglloc/http-nose/httpclient"
 	"strings"
 	"sync"
-	"github.com/buglloc/http-nose/httpclient"
 )
 
 type SupportedMethods struct {
 	BaseFeature
-	Any bool
+	Any     bool
 	Methods []string
 }
 

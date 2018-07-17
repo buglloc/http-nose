@@ -18,7 +18,7 @@ func (f *HeaderNameSymbols) String() string {
 }
 
 func (f *HeaderNameSymbols) Collect() error {
-	symbols, _ := f.checkHeaderSymbols(f.BaseRequest, "x-test%csym", "x-test%csym","test", "test")
+	symbols, _ := f.checkHeaderSymbols(f.BaseRequest, "x-test%csym", "x-test%csym", "test", "test")
 	f.Symbols = append(symbols, AlphaNumSyms...)
 	return nil
 }

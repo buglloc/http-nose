@@ -1,9 +1,9 @@
 package httpfeature
 
 import (
-	"strings"
 	"fmt"
 	"github.com/buglloc/http-nose/httpclient"
+	"strings"
 )
 
 type ProvidedHeaders struct {
@@ -44,7 +44,7 @@ func (f *ProvidedHeaders) Collect() error {
 	f.Headers = make([]httpclient.Header, 0)
 	for _, h := range f.BaseResponse.Headers {
 		_, requested := baseHeaders[strings.ToLower(h.Name)]
-		if ! requested {
+		if !requested {
 			f.Headers = append(f.Headers, h)
 		}
 	}

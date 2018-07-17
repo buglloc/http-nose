@@ -1,16 +1,16 @@
 package httpfeature
 
 import (
+	"github.com/buglloc/http-nose/httpclient"
 	"strings"
 	"sync"
-	"github.com/buglloc/http-nose/httpclient"
 )
 
 type Feature interface {
-	Name()    string
+	Name() string
 	Collect() error
-	String()  string
-	Export()     interface{}
+	String() string
+	Export() interface{}
 }
 
 type BaseFeature struct {

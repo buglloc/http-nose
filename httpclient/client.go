@@ -1,15 +1,14 @@
 package httpclient
 
 import (
-	"net"
-	"time"
-	"net/http"
 	"bufio"
 	"log"
+	"net"
+	"net/http"
+	"time"
 )
 
 const timeout = 10
-
 
 type Client struct {
 	Target string

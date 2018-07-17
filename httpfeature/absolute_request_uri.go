@@ -7,7 +7,7 @@ import (
 type AbsoluteRequestUri struct {
 	BaseFeature
 	Supported bool
-	Untouched  bool
+	Untouched bool
 	PickHost  bool
 	PickPath  bool
 }

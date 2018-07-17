@@ -1,11 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
-	"os"
 	"log"
-	"encoding/json"
+	"os"
+
 	"github.com/buglloc/http-nose/httpclient"
 	"github.com/buglloc/http-nose/httpfeature"
 )
@@ -20,7 +21,7 @@ func PrepareFeaturesForJson(features *httpfeature.Features) []map[string]interfa
 	for _, f := range features.Collect() {
 		result = append(result,
 			map[string]interface{}{
-				"Name": f.Name(),
+				"Name":  f.Name(),
 				"Value": f.Export(),
 			},
 		)

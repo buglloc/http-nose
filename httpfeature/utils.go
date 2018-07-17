@@ -1,16 +1,17 @@
 package httpfeature
 
 import (
-	"strings"
-	"fmt"
 	"errors"
-	"math/rand"
-	"strconv"
-	"sort"
+	"fmt"
 	"math"
+	"math/rand"
+	"sort"
+	"strconv"
+	"strings"
 )
 
-const concurrency = 30
+const concurrency = 16
+
 var NotAlphaNumSyms []rune
 var AlphaNumSyms []rune
 var HttpMethods = []string{
@@ -57,7 +58,7 @@ func TruncatingSprintf(str string, args ...interface{}) (string, error) {
 func RandAlphanumString(n int) string {
 	b := make([]rune, n)
 	for i := range b {
-		b[i] = AlphaNumSyms[rand.Int63() % int64(len(AlphaNumSyms))]
+		b[i] = AlphaNumSyms[rand.Int63()%int64(len(AlphaNumSyms))]
 	}
 	return string(b)
 }

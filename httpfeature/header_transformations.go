@@ -1,14 +1,14 @@
 package httpfeature
 
 import (
-	"strings"
 	"fmt"
+	"strings"
 )
 
 type HeaderTransformations struct {
 	BaseFeature
-	HeaderName []string
-	HeaderDelimiter []string
+	HeaderName          []string
+	HeaderDelimiter     []string
 	HeaderLineDelimiter []string
 }
 
@@ -17,9 +17,9 @@ func (f *HeaderTransformations) Name() string {
 }
 
 func (f *HeaderTransformations) Export() interface{} {
-	return map[string][]string {
-		"HeaderName": f.HeaderName,
-		"HeaderDelimiter": f.HeaderDelimiter,
+	return map[string][]string{
+		"HeaderName":          f.HeaderName,
+		"HeaderDelimiter":     f.HeaderDelimiter,
 		"HeaderLineDelimiter": f.HeaderLineDelimiter,
 	}
 }
@@ -27,13 +27,13 @@ func (f *HeaderTransformations) Export() interface{} {
 func (f *HeaderTransformations) String() string {
 	result := make([]string, 0)
 	if len(f.HeaderName) > 0 {
-		result = append(result, "HeaderName: " + strings.Join(f.HeaderName, ", "))
+		result = append(result, "HeaderName: "+strings.Join(f.HeaderName, ", "))
 	}
 	if len(f.HeaderDelimiter) > 0 {
-		result = append(result, "HeaderDelimiter: " + strings.Join(f.HeaderDelimiter, ", "))
+		result = append(result, "HeaderDelimiter: "+strings.Join(f.HeaderDelimiter, ", "))
 	}
 	if len(f.HeaderLineDelimiter) > 0 {
-		result = append(result, "HeaderLineDelimiter: " + strings.Join(f.HeaderLineDelimiter, ", "))
+		result = append(result, "HeaderLineDelimiter: "+strings.Join(f.HeaderLineDelimiter, ", "))
 	}
 	if len(result) == 0 {
 		return "none"

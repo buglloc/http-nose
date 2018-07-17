@@ -1,12 +1,11 @@
 package parser
 
 import (
-	"io"
-	"errors"
 	"bufio"
-	"strings"
+	"errors"
 	"github.com/buglloc/http-nose/httpclient"
-	//"fmt"
+	"io"
+	"strings"
 )
 
 type Request struct {
@@ -34,6 +33,10 @@ func (pr *Request) Parse(rd io.Reader) error {
 	if err != nil {
 		return err
 	}
+
+	//if pr.Method == "POST" {
+	//	time.Sleep(5*time.Second)
+	//}
 
 	err = pr.parseHeaders(reader)
 	if err != nil {

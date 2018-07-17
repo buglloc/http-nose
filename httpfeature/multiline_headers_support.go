@@ -34,8 +34,8 @@ func (f *MultilineHeadersSupport) check() bool {
 		return false
 	}
 
-	for _, h := range resp.HeadersSlice(("X-Foo")) {
-		if strings.Contains(h.Value, "foo") && strings.Contains(h.Value, "bar") {
+	for _, h := range resp.HeadersSlice("X-Foo") {
+		if strings.HasPrefix(h.Value, "foo") && strings.HasSuffix(h.Value, "bar") {
 			return true
 		}
 	}

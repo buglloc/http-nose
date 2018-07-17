@@ -61,7 +61,7 @@ func (f *HeaderCountOverflowAction) check(maximum int) int {
 	}
 
 	rand := RandAlphanumString(8)
-	req.AddHeader("X-Overflow", "overflow" + rand)
+	req.AddHeader("X-Overflow", "overflow"+rand)
 
 	resp, err := f.Client.MakeRequest(req)
 	if err != nil || resp.Status != 200 {

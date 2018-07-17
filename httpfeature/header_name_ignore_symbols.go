@@ -14,10 +14,10 @@ func (f *HeaderNameIgnoreSymbols) Name() string {
 }
 
 func (f *HeaderNameIgnoreSymbols) Export() interface{} {
-	return map[string][]rune {
-		"Begin": f.Begin,
+	return map[string][]rune{
+		"Begin":  f.Begin,
 		"Middle": f.Middle,
-		"End": f.End,
+		"End":    f.End,
 	}
 }
 
@@ -27,8 +27,8 @@ func (f *HeaderNameIgnoreSymbols) String() string {
 }
 
 func (f *HeaderNameIgnoreSymbols) Collect() error {
-	f.Begin, _ = f.checkHeaderSymbols(f.BaseRequest, "%cx-testsym", "x-testsym","test", "test")
-	f.Middle, _ = f.checkHeaderSymbols(f.BaseRequest, "x-test%csym", "x-testsym","test", "test")
-	f.End, _ = f.checkHeaderSymbols(f.BaseRequest, "x-testsym%c", "x-testsym","test", "test")
+	f.Begin, _ = f.checkHeaderSymbols(f.BaseRequest, "%cx-testsym", "x-testsym", "test", "test")
+	f.Middle, _ = f.checkHeaderSymbols(f.BaseRequest, "x-test%csym", "x-testsym", "test", "test")
+	f.End, _ = f.checkHeaderSymbols(f.BaseRequest, "x-testsym%c", "x-testsym", "test", "test")
 	return nil
 }

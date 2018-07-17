@@ -1,9 +1,9 @@
 package tcp
 
 import (
-	"net"
-	"log"
 	"io"
+	"log"
+	"net"
 	"time"
 )
 

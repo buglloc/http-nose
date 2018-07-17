@@ -1,13 +1,13 @@
 package httpclient
 
 import (
-	"net/http"
 	"encoding/json"
+	"net/http"
 )
 
 type Response struct {
 	Request
-	Status  int
+	Status int
 }
 
 func NewFromHttpResponse(response *http.Response) (*Response, error) {

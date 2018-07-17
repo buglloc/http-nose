@@ -1,10 +1,9 @@
 package httpfeature
 
-
 const (
-	DUPLICATE_HOST_NA      = 0
-	DUPLICATE_HOST_FIRST   = 1
-	DUPLICATE_HOST_LAST    = 2
+	DUPLICATE_HOST_NA    = 0
+	DUPLICATE_HOST_FIRST = 1
+	DUPLICATE_HOST_LAST  = 2
 )
 
 type DuplicateHost struct {

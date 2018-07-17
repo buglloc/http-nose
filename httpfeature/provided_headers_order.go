@@ -6,7 +6,7 @@ import (
 
 type ProvidedHeadersOrder struct {
 	BaseFeature
-	After bool
+	After  bool
 	Before bool
 }
 
@@ -15,7 +15,7 @@ func (f *ProvidedHeadersOrder) Name() string {
 }
 
 func (f *ProvidedHeadersOrder) Export() interface{} {
-	if ! f.After && ! f.Before {
+	if !f.After && !f.Before {
 		return "N/A"
 	}
 	if f.After {
@@ -25,7 +25,7 @@ func (f *ProvidedHeadersOrder) Export() interface{} {
 }
 
 func (f *ProvidedHeadersOrder) String() string {
-	if ! f.After && ! f.Before {
+	if !f.After && !f.Before {
 		return "n/a"
 	}
 	if f.After {
@@ -69,4 +69,3 @@ func (f *ProvidedHeadersOrder) Collect() error {
 
 	return nil
 }
-

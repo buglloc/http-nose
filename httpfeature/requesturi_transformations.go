@@ -1,14 +1,14 @@
 package httpfeature
 
 import (
-	"strings"
 	"fmt"
+	"strings"
 	"sync"
 )
 
 type RequestLineTransformations struct {
 	BaseFeature
-	UriTransforms []string
+	UriTransforms  []string
 	PathTransforms []string
 }
 
@@ -17,8 +17,8 @@ func (f *RequestLineTransformations) Name() string {
 }
 
 func (f *RequestLineTransformations) Export() interface{} {
-	return map[string][]string {
-		"Uri": f.UriTransforms,
+	return map[string][]string{
+		"Uri":  f.UriTransforms,
 		"Path": f.PathTransforms,
 	}
 }

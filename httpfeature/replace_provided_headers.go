@@ -1,13 +1,13 @@
 package httpfeature
 
 import (
-	"strings"
 	"fmt"
+	"strings"
 )
 
 const (
-	REPLACE_PROVIDED_HEADERS_NO = 0
-	REPLACE_PROVIDED_HEADERS_YES = 1
+	REPLACE_PROVIDED_HEADERS_NO     = 0
+	REPLACE_PROVIDED_HEADERS_YES    = 1
 	REPLACE_PROVIDED_HEADERS_MERGED = 2
 )
 
