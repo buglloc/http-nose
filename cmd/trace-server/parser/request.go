@@ -3,9 +3,10 @@ package parser
 import (
 	"bufio"
 	"errors"
-	"github.com/buglloc/http-nose/httpclient"
 	"io"
 	"strings"
+
+	"github.com/buglloc/http-nose/httpclient"
 )
 
 type Request struct {

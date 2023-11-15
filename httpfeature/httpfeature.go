@@ -1,8 +1,9 @@
 package httpfeature
 
 import (
-	"github.com/buglloc/http-nose/httpclient"
 	"log"
+
+	"github.com/buglloc/http-nose/httpclient"
 )
 
 type Features struct {

@@ -2,8 +2,9 @@ package httpfeature
 
 import (
 	"fmt"
-	"github.com/buglloc/http-nose/httpclient"
 	"strings"
+
+	"github.com/buglloc/http-nose/httpclient"
 )
 
 type ProvidedHeaders struct {
