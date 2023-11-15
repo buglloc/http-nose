@@ -36,7 +36,7 @@ func (f *RequestLineTransformations) formatTransform(trans []string) string {
 }
 
 func (f *RequestLineTransformations) Collect() error {
-	f.UriTransforms, f.PathTransforms = f.check([][]string{
+	toCheck := [][]string{
 		{"merge//slashes", ""},
 		{"merge%2F%2Fescaped", ""},
 		{"simple/../normalize", ""},
@@ -44,8 +44,21 @@ func (f *RequestLineTransformations) Collect() error {
 		{"escapedall%2f%2e%2e%2fnormalize", ""},
 		{"fragment", "#fragment"},
 		{"is/Case/Sensetive", "FoO=Bar"},
-	})
+	}
+	for _, c := range NotAlphaNumSyms {
+		switch c {
+		case '/', '?', '#', '\r', '\n', ' ':
+			continue
+		default:
+		}
 
+		toCheck = append(toCheck, [][]string{
+			{fmt.Sprintf("/tst%c", c), ""},
+			{fmt.Sprintf("%c/tst", c), ""},
+		}...)
+	}
+
+	f.UriTransforms, f.PathTransforms = f.check(toCheck)
 	return nil
 }
 
