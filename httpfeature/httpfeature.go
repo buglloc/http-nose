@@ -28,6 +28,7 @@ type Features struct {
 	headerTransformations        *HeaderTransformations
 	requestLineTransformations   *RequestLineTransformations
 	pathIgnoreSymbols            *PathIgnoreSymbols
+	pathNormalizations           *PathNormalizations
 	supportedVersions            *SupportedVersions
 	maximumHeadersCount          *MaximumHeadersCount
 	maximumHeaderLen             *MaximumHeaderLen
@@ -259,6 +260,18 @@ func (f *Features) GetPathIgnoreSymbols() *PathIgnoreSymbols {
 	return f.pathIgnoreSymbols
 }
 
+func (f *Features) GetPathNormalizations() *PathNormalizations {
+	if f.pathNormalizations == nil {
+		log.Print("Collecting PathNormalizations")
+		r := &PathNormalizations{
+			BaseFeature: f.newBaseFeature(),
+		}
+		r.Collect()
+		f.pathNormalizations = r
+	}
+	return f.pathNormalizations
+}
+
 func (f *Features) GetSupportedVersions() *SupportedVersions {
 	if f.supportedVersions == nil {
 		log.Print("Collecting SupportedVersions")
@@ -336,14 +349,15 @@ func (f *Features) Collect() []Feature {
 		f.GetHeaderValueSymbols(),
 		f.GetHeaderNameIgnoreSymbols(),
 		f.GetHeaderValueIgnoreSymbols(),
-		f.GetAbsoluteRequestUri(),
 		f.GetHeaderTransformations(),
-		f.GetRequestLineTransformations(),
-		f.GetPathIgnoreSymbols(),
 		f.GetMaximumHeaderLen(),
 		f.GetMaximumHeadersCount(),
 		f.GetHeaderCountOverflowAction(),
 		f.GetMaximumDuplicateHeadersCount(),
+		f.GetAbsoluteRequestUri(),
+		f.GetRequestLineTransformations(),
+		f.GetPathIgnoreSymbols(),
+		f.GetPathNormalizations(),
 	}
 }
 
