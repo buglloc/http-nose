@@ -1,7 +1,6 @@
 package httpfeature
 
 import (
-	"errors"
 	"fmt"
 	"math"
 	"math/rand"
@@ -12,8 +11,8 @@ import (
 
 const concurrency = 16
 
-var NotAlphaNumSyms []rune
-var AlphaNumSyms []rune
+var NotAlphaNumSyms []byte
+var AlphaNumSyms []byte
 var HttpMethods = []string{
 	// RFC 2616
 	"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "TRACE", "CONNECT",
@@ -27,36 +26,32 @@ func init() {
 	for i := 0; i < 0xFF; i++ {
 		if i >= 0x30 && i <= 0x39 {
 			// Nums
-			AlphaNumSyms = append(AlphaNumSyms, rune(i))
+			AlphaNumSyms = append(AlphaNumSyms, byte(i))
 			continue
 		}
 
 		if i >= 0x41 && i <= 0x5a {
 			// Upper alpha
-			AlphaNumSyms = append(AlphaNumSyms, rune(i))
+			AlphaNumSyms = append(AlphaNumSyms, byte(i))
 			continue
 		}
 
 		if i >= 0x61 && i <= 0x7a {
 			// Lower alpha
-			AlphaNumSyms = append(AlphaNumSyms, rune(i))
+			AlphaNumSyms = append(AlphaNumSyms, byte(i))
 			continue
 		}
 
-		NotAlphaNumSyms = append(NotAlphaNumSyms, rune(i))
+		NotAlphaNumSyms = append(NotAlphaNumSyms, byte(i))
 	}
 }
 
-func TruncatingSprintf(str string, args ...interface{}) (string, error) {
-	n := strings.Count(str, "%c")
-	if n > len(args) {
-		return "", errors.New("Unexpected string:" + str)
-	}
-	return fmt.Sprintf(str, args[:n]...), nil
+func Symf(str string, sym byte) string {
+	return strings.ReplaceAll(str, "{sym}", string([]byte{sym}))
 }
 
 func RandAlphanumString(n int) string {
-	b := make([]rune, n)
+	b := make([]byte, n)
 	for i := range b {
 		b[i] = AlphaNumSyms[rand.Int63()%int64(len(AlphaNumSyms))]
 	}
@@ -75,7 +70,7 @@ func PrintableStrings(data []string) string {
 	return strings.Join(result, ", ")
 }
 
-func PrintableRunes(data []rune) string {
+func PrintableSymbols(data []byte) string {
 	if len(data) == 0 {
 		return "none"
 	}
@@ -84,32 +79,32 @@ func PrintableRunes(data []rune) string {
 		return data[i] < data[j]
 	})
 
-	result := make([]string, 0)
+	var result []string
 	max := len(data) - 1
-	var first rune = -1
-	continuousRune := false
+	first := -1
+	continuousByte := false
 	for i, v := range data {
 		if first == -1 {
-			first = v
+			first = int(v)
 		}
 
 		if i != max && data[i+1]-v == 1 {
-			continuousRune = true
+			continuousByte = true
 			continue
 		}
 
-		if first == v {
+		if first == int(v) {
 			result = append(result, fmt.Sprintf("\\x%02X", first))
 			first = -1
-			continuousRune = false
+			continuousByte = false
 		} else {
 			sep := ","
-			if continuousRune {
+			if continuousByte {
 				sep = "-"
 			}
 			result = append(result, fmt.Sprintf("\\x%02X%s\\x%02X", first, sep, v))
 			first = -1
-			continuousRune = false
+			continuousByte = false
 		}
 	}
 	if first != -1 {

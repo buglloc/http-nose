@@ -22,22 +22,22 @@ type BaseFeature struct {
 	Features     *Features
 }
 
-func (f *BaseFeature) checkHeaderSymbols(baseRequest httpclient.Request, name, testName, value, testValue string) ([]rune, error) {
-	allowedSymbols := make([]rune, 0)
+func (f *BaseFeature) checkHeaderSymbols(baseRequest httpclient.Request, name, testName, value, testValue string) ([]byte, error) {
+	var allowedSymbols []byte
 	mu := &sync.Mutex{}
 	sem := make(chan bool, concurrency)
 	for _, c := range NotAlphaNumSyms {
 		sem <- true
-		go func(sym rune) {
+		go func(sym byte) {
 			defer func() { <-sem }()
 			req := baseRequest.Clone()
 
-			headerName, _ := TruncatingSprintf(name, sym)
+			headerName := Symf(name, sym)
 			headerName = strings.ToLower(headerName)
-			headerTestName, _ := TruncatingSprintf(testName, sym)
+			headerTestName := Symf(testName, sym)
 			headerTestName = strings.ToLower(headerTestName)
-			headerValue, _ := TruncatingSprintf(value, sym)
-			headerTestValue, _ := TruncatingSprintf(testValue, sym)
+			headerValue := Symf(value, sym)
+			headerTestValue := Symf(testValue, sym)
 
 			req.AddHeader(headerName, headerValue)
 			resp, err := f.Client.MakeRequest(req)

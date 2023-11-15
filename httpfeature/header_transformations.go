@@ -105,19 +105,18 @@ func (f *HeaderTransformations) checkHeaderLineDelimiter(delims []string) []stri
 	return result
 }
 
-func (f *HeaderTransformations) checkHeaderDelimiter(delims []rune) []string {
+func (f *HeaderTransformations) checkHeaderDelimiter(delims []byte) []string {
 	result := make([]string, 0)
 	if len(f.BaseResponse.Raw) == 0 {
 		return result
 	}
 
 	for _, d := range delims {
-		delimiter := string(d)
 		req := f.BaseRequest.Clone()
 		testName := fmt.Sprintf("X-%s", RandAlphanumString(8))
 		testValue := fmt.Sprintf("%s", RandAlphanumString(8))
 		req.AddHeader(testName, testValue)
-		resp, err := f.Client.MakeRawRequest(req.Build(nil, []byte(delimiter)))
+		resp, err := f.Client.MakeRawRequest(req.Build(nil, []byte{d}))
 		if err != nil || resp.Status != 200 {
 			continue
 		}
@@ -136,7 +135,7 @@ func (f *HeaderTransformations) checkHeaderDelimiter(delims []rune) []string {
 				endPos += startPos
 			}
 			trans := resp.Raw[startPos:endPos]
-			if trans != delimiter {
+			if trans != string(d) {
 				result = append(result, fmt.Sprintf("%q -> %q", d, trans))
 			}
 		}

@@ -6,7 +6,7 @@ import (
 
 type HeaderDelimiters struct {
 	BaseFeature
-	Symbols []rune
+	Symbols []byte
 }
 
 func (f *HeaderDelimiters) Name() string {
@@ -18,7 +18,7 @@ func (f *HeaderDelimiters) Export() interface{} {
 }
 
 func (f *HeaderDelimiters) String() string {
-	return PrintableRunes(f.Symbols)
+	return PrintableSymbols(f.Symbols)
 }
 
 func (f *HeaderDelimiters) Collect() error {
@@ -26,18 +26,18 @@ func (f *HeaderDelimiters) Collect() error {
 	return nil
 }
 
-func (f *HeaderDelimiters) collectSymbols() ([]rune, error) {
-	symbols := make([]rune, 0)
+func (f *HeaderDelimiters) collectSymbols() ([]byte, error) {
+	var symbols []byte
 	mu := &sync.Mutex{}
 	sem := make(chan bool, concurrency)
 	for _, c := range NotAlphaNumSyms {
 		sem <- true
-		go func(sym rune) {
+		go func(sym byte) {
 			defer func() { <-sem }()
 
 			req := f.BaseRequest.Clone()
 			req.AddHeader("X-Foo", "foo")
-			resp, err := f.Client.MakeRawRequest(req.Build(nil, []byte(string(sym))))
+			resp, err := f.Client.MakeRawRequest(req.Build(nil, []byte{sym}))
 			if err != nil || resp.Status != 200 {
 				return
 			}
