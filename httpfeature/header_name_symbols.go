@@ -2,7 +2,7 @@ package httpfeature
 
 type HeaderNameSymbols struct {
 	BaseFeature
-	Symbols []rune
+	Symbols []byte
 }
 
 func (f *HeaderNameSymbols) Name() string {
@@ -14,11 +14,11 @@ func (f *HeaderNameSymbols) Export() interface{} {
 }
 
 func (f *HeaderNameSymbols) String() string {
-	return PrintableRunes(f.Symbols)
+	return PrintableSymbols(f.Symbols)
 }
 
 func (f *HeaderNameSymbols) Collect() error {
-	symbols, _ := f.checkHeaderSymbols(f.BaseRequest, "x-test%csym", "x-test%csym", "test", "test")
+	symbols, _ := f.checkHeaderSymbols(f.BaseRequest, "x-test{sym}sym", "x-test{sym}sym", "test", "test")
 	f.Symbols = append(symbols, AlphaNumSyms...)
 	return nil
 }

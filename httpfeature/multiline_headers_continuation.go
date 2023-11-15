@@ -8,7 +8,7 @@ import (
 
 type MultilineHeadersContinuation struct {
 	BaseFeature
-	Symbols []rune
+	Symbols []byte
 }
 
 func (f *MultilineHeadersContinuation) Name() string {
@@ -20,7 +20,7 @@ func (f *MultilineHeadersContinuation) Export() interface{} {
 }
 
 func (f *MultilineHeadersContinuation) String() string {
-	return PrintableRunes(f.Symbols)
+	return PrintableSymbols(f.Symbols)
 }
 
 func (f *MultilineHeadersContinuation) Collect() error {
@@ -32,11 +32,11 @@ func (f *MultilineHeadersContinuation) Collect() error {
 	sem := make(chan bool, concurrency)
 	for _, c := range NotAlphaNumSyms {
 		sem <- true
-		go func(sym rune) {
+		go func(sym byte) {
 			defer func() { <-sem }()
 			req := f.BaseRequest.Clone()
 
-			req.AddHeader("X-Multiline-Test", fmt.Sprintf("test\r\n%cmultiline", sym))
+			req.AddHeader("X-Multiline-Test", fmt.Sprintf("test\r\n%smultiline", sym))
 			resp, err := f.Client.MakeRequest(req)
 			if err != nil || resp.Status != 200 {
 				return

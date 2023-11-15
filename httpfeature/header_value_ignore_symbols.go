@@ -4,9 +4,9 @@ import "fmt"
 
 type HeaderValueIgnoreSymbols struct {
 	BaseFeature
-	Begin  []rune
-	Middle []rune
-	End    []rune
+	Begin  []byte
+	Middle []byte
+	End    []byte
 }
 
 func (f *HeaderValueIgnoreSymbols) Name() string {
@@ -14,7 +14,7 @@ func (f *HeaderValueIgnoreSymbols) Name() string {
 }
 
 func (f *HeaderValueIgnoreSymbols) Export() interface{} {
-	return map[string][]rune{
+	return map[string][]byte{
 		"Begin":  f.Begin,
 		"Middle": f.Middle,
 		"End":    f.End,
@@ -23,12 +23,12 @@ func (f *HeaderValueIgnoreSymbols) Export() interface{} {
 
 func (f *HeaderValueIgnoreSymbols) String() string {
 	return fmt.Sprintf("begin(%s), middle(%s), end(%s)",
-		PrintableRunes(f.Begin), PrintableRunes(f.Middle), PrintableRunes(f.End))
+		PrintableSymbols(f.Begin), PrintableSymbols(f.Middle), PrintableSymbols(f.End))
 }
 
 func (f *HeaderValueIgnoreSymbols) Collect() error {
-	f.Begin, _ = f.checkHeaderSymbols(f.BaseRequest, "x-testsym", "x-testsym", "%ctest", "test")
-	f.Middle, _ = f.checkHeaderSymbols(f.BaseRequest, "x-testsym", "x-testsym", "te%cst", "test")
-	f.End, _ = f.checkHeaderSymbols(f.BaseRequest, "x-testsym", "x-testsym", "test%c", "test")
+	f.Begin, _ = f.checkHeaderSymbols(f.BaseRequest, "x-testsym", "x-testsym", "{sym}test", "test")
+	f.Middle, _ = f.checkHeaderSymbols(f.BaseRequest, "x-testsym", "x-testsym", "te{sym}st", "test")
+	f.End, _ = f.checkHeaderSymbols(f.BaseRequest, "x-testsym", "x-testsym", "test{sym}", "test")
 	return nil
 }

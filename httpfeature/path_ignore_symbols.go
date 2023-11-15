@@ -7,8 +7,8 @@ import (
 
 type PathIgnoreSymbols struct {
 	BaseFeature
-	Begin []rune
-	End   []rune
+	Begin []byte
+	End   []byte
 }
 
 func (f *PathIgnoreSymbols) Name() string {
@@ -16,7 +16,7 @@ func (f *PathIgnoreSymbols) Name() string {
 }
 
 func (f *PathIgnoreSymbols) Export() interface{} {
-	return map[string][]rune{
+	return map[string][]byte{
 		"Begin": f.Begin,
 		"End":   f.End,
 	}
@@ -24,18 +24,18 @@ func (f *PathIgnoreSymbols) Export() interface{} {
 
 func (f *PathIgnoreSymbols) String() string {
 	return fmt.Sprintf("begin(%s), end(%s)",
-		PrintableRunes(f.Begin), PrintableRunes(f.End))
+		PrintableSymbols(f.Begin), PrintableSymbols(f.End))
 }
 
 func (f *PathIgnoreSymbols) Collect() error {
 	testPath := fmt.Sprintf("/%s", RandAlphanumString(8))
-	f.Begin, _ = f.checkPathSymbols("%c"+testPath, testPath)
-	f.End, _ = f.checkPathSymbols(testPath+"%c", testPath)
+	f.Begin = f.checkPathSymbols("{sym}"+testPath, testPath)
+	f.End = f.checkPathSymbols(testPath+"{sym}", testPath)
 	return nil
 }
 
-func (f *PathIgnoreSymbols) checkPathSymbols(pathTmpl, expectedPath string) ([]rune, error) {
-	allowedSymbols := make([]rune, 0)
+func (f *PathIgnoreSymbols) checkPathSymbols(pathTmpl, expectedPath string) []byte {
+	var allowedSymbols []byte
 	mu := &sync.Mutex{}
 	sem := make(chan bool, concurrency)
 	for _, c := range NotAlphaNumSyms {
@@ -47,11 +47,11 @@ func (f *PathIgnoreSymbols) checkPathSymbols(pathTmpl, expectedPath string) ([]r
 		}
 
 		sem <- true
-		go func(sym rune) {
+		go func(sym byte) {
 			defer func() { <-sem }()
 
 			req := f.BaseRequest.Clone()
-			req.Path, _ = TruncatingSprintf(pathTmpl, sym)
+			req.Path = Symf(pathTmpl, sym)
 
 			resp, err := f.Client.MakeRequest(req)
 			if err != nil || resp.Status != 200 {
@@ -70,5 +70,5 @@ func (f *PathIgnoreSymbols) checkPathSymbols(pathTmpl, expectedPath string) ([]r
 		sem <- true
 	}
 
-	return allowedSymbols, nil
+	return allowedSymbols
 }
