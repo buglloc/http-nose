@@ -36,7 +36,7 @@ func (f *MultilineHeadersContinuation) Collect() error {
 			defer func() { <-sem }()
 			req := f.BaseRequest.Clone()
 
-			req.AddHeader("X-Multiline-Test", fmt.Sprintf("test\r\n%cmultiline", c))
+			req.AddHeader("X-Multiline-Test", fmt.Sprintf("test\r\n%cmultiline", sym))
 			resp, err := f.Client.MakeRequest(req)
 			if err != nil || resp.Status != 200 {
 				return

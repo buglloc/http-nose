@@ -23,7 +23,7 @@ func (c *Client) MakeRawRequest(r []byte) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	conn.SetReadDeadline(time.Now().Add(timeout * time.Second))
+	_ = conn.SetReadDeadline(time.Now().Add(timeout * time.Second))
 	defer conn.Close()
 	_, err = conn.Write(r)
 	if err != nil {

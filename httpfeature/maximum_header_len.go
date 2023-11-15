@@ -5,8 +5,8 @@ import (
 	"strings"
 )
 
-const MIN_HEADER_LEN = 128
-const MAX_HEADER_LEN = 10 * 1024
+const MinHeaderLen = 128
+const MaxHeaderLen = 10 * 1024
 
 type MaximumHeaderLen struct {
 	BaseFeature
@@ -33,10 +33,10 @@ func (f *MaximumHeaderLen) String() string {
 func (f *MaximumHeaderLen) Collect() error {
 	c := make(chan float64)
 	go func() {
-		c <- GoldenSectionSearch(MIN_HEADER_LEN, MAX_HEADER_LEN, 2, f.goldenNameSize)
+		c <- GoldenSectionSearch(MinHeaderLen, MaxHeaderLen, 2, f.goldenNameSize)
 	}()
 	go func() {
-		c <- GoldenSectionSearch(MIN_HEADER_LEN, MAX_HEADER_LEN, 2, f.golderValueSize)
+		c <- GoldenSectionSearch(MinHeaderLen, MaxHeaderLen, 2, f.golderValueSize)
 	}()
 	f.NameLen = int(<-c)
 	f.ValueLen = int(<-c)
@@ -44,7 +44,7 @@ func (f *MaximumHeaderLen) Collect() error {
 }
 
 func (f *MaximumHeaderLen) goldenNameSize(size float64) float64 {
-	if size == MIN_HEADER_LEN {
+	if size == MinHeaderLen {
 		return size
 	}
 
@@ -60,7 +60,7 @@ func (f *MaximumHeaderLen) goldenNameSize(size float64) float64 {
 }
 
 func (f *MaximumHeaderLen) golderValueSize(size float64) float64 {
-	if size == MIN_HEADER_LEN {
+	if size == MinHeaderLen {
 		return size
 	}
 

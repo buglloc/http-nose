@@ -23,7 +23,7 @@ type BaseFeature struct {
 }
 
 func (f *BaseFeature) checkHeaderSymbols(baseRequest httpclient.Request, name, testName, value, testValue string) ([]rune, error) {
-	allowed_symbols := make([]rune, 0)
+	allowedSymbols := make([]rune, 0)
 	mu := &sync.Mutex{}
 	sem := make(chan bool, concurrency)
 	for _, c := range NotAlphaNumSyms {
@@ -48,7 +48,7 @@ func (f *BaseFeature) checkHeaderSymbols(baseRequest httpclient.Request, name, t
 			for _, h := range resp.Request.Headers {
 				if strings.ToLower(h.Name) == headerTestName && h.Value == headerTestValue {
 					mu.Lock()
-					allowed_symbols = append(allowed_symbols, sym)
+					allowedSymbols = append(allowedSymbols, sym)
 					mu.Unlock()
 					break
 				}
@@ -60,5 +60,5 @@ func (f *BaseFeature) checkHeaderSymbols(baseRequest httpclient.Request, name, t
 		sem <- true
 	}
 
-	return allowed_symbols, nil
+	return allowedSymbols, nil
 }

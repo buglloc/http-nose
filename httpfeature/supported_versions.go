@@ -1,11 +1,11 @@
 package httpfeature
 
 const (
-	HTTP_VERSION_NONE = 1 << 0
-	HTTP_VERSION_09   = 1 << 1
-	HTTP_VERSION_10   = 1 << 2
-	HTTP_VERSION_11   = 1 << 3
-	HTTP_VERSION_ANY  = 1 << 4
+	HttpVersionNone = 1 << 0
+	HttpVersion09   = 1 << 1
+	HttpVersion10   = 1 << 2
+	HttpVersion11   = 1 << 3
+	HttpVersionAny  = 1 << 4
 )
 
 type SupportedVersions struct {
@@ -19,19 +19,19 @@ func (f *SupportedVersions) Name() string {
 
 func (f *SupportedVersions) Versions() []string {
 	result := make([]string, 0)
-	if (f.Supported & HTTP_VERSION_NONE) != 0 {
+	if (f.Supported & HttpVersionNone) != 0 {
 		result = append(result, "None")
 	}
-	if (f.Supported & HTTP_VERSION_09) != 0 {
+	if (f.Supported & HttpVersion09) != 0 {
 		result = append(result, "0.9")
 	}
-	if (f.Supported & HTTP_VERSION_10) != 0 {
+	if (f.Supported & HttpVersion10) != 0 {
 		result = append(result, "1.0")
 	}
-	if (f.Supported & HTTP_VERSION_11) != 0 {
+	if (f.Supported & HttpVersion11) != 0 {
 		result = append(result, "1.1")
 	}
-	if (f.Supported & HTTP_VERSION_ANY) != 0 {
+	if (f.Supported & HttpVersionAny) != 0 {
 		result = append(result, "xxx")
 	}
 
@@ -48,19 +48,19 @@ func (f *SupportedVersions) String() string {
 
 func (f *SupportedVersions) Collect() error {
 	if f.checkVersion("") {
-		f.Supported |= HTTP_VERSION_NONE
+		f.Supported |= HttpVersionNone
 	}
 	if f.checkVersion("HTTP/0.9") {
-		f.Supported |= HTTP_VERSION_09
+		f.Supported |= HttpVersion09
 	}
 	if f.checkVersion("HTTP/1.0") {
-		f.Supported |= HTTP_VERSION_10
+		f.Supported |= HttpVersion10
 	}
 	if f.checkVersion("HTTP/1.1") {
-		f.Supported |= HTTP_VERSION_11
+		f.Supported |= HttpVersion11
 	}
 	if f.checkVersion("HTTP/333") {
-		f.Supported |= HTTP_VERSION_ANY
+		f.Supported |= HttpVersionAny
 	}
 	return nil
 }

@@ -26,10 +26,10 @@ func (f *MaximumDuplicateHeadersCount) String() string {
 }
 
 func (f *MaximumDuplicateHeadersCount) Collect() error {
-	if f.Features.GetDuplicateHeaders().Action >= DUPLICATE_HEADERS_ALLOWED {
+	if f.Features.GetDuplicateHeaders().Action >= DuplicateHeadersAllowed {
 		max := f.Features.GetMaximumHeadersCount().Count + 1
 		if max == 0 {
-			max = MAX_HEADERS_COUNT
+			max = MaxHeadersCount
 		}
 		f.Count = f.check(max)
 	} else {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-const MAX_HEADERS_COUNT = 512
+const MaxHeadersCount = 512
 
 type MaximumHeadersCount struct {
 	BaseFeature
@@ -17,7 +17,7 @@ func (f *MaximumHeadersCount) Name() string {
 
 func (f *MaximumHeadersCount) Export() interface{} {
 	if f.Count == -1 {
-		return MAX_HEADERS_COUNT
+		return MaxHeadersCount
 	}
 
 	return f.Count
@@ -25,7 +25,7 @@ func (f *MaximumHeadersCount) Export() interface{} {
 
 func (f *MaximumHeadersCount) String() string {
 	if f.Count == -1 {
-		return fmt.Sprintf("%d+", MAX_HEADERS_COUNT)
+		return fmt.Sprintf("%d+", MaxHeadersCount)
 	}
 	return fmt.Sprintf("%d", f.Count)
 }
@@ -36,10 +36,10 @@ func (f *MaximumHeadersCount) Collect() error {
 }
 
 func (f *MaximumHeadersCount) check() int {
-	counts := make([]int, MAX_HEADERS_COUNT)
+	counts := make([]int, MaxHeadersCount)
 	sem := make(chan bool, concurrency)
 	stop := false
-	for i := 0; i < MAX_HEADERS_COUNT && !stop; i++ {
+	for i := 0; i < MaxHeadersCount && !stop; i++ {
 		sem <- true
 		go func(cur int) {
 			defer func() { <-sem }()
@@ -73,7 +73,7 @@ func (f *MaximumHeadersCount) check() int {
 		}
 	}
 
-	if max >= MAX_HEADERS_COUNT {
+	if max >= MaxHeadersCount {
 		return -1
 	}
 	return max

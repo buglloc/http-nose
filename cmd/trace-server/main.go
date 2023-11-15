@@ -60,7 +60,7 @@ func main() {
 		req, err := parseMessage(rd)
 		if err != nil {
 			log.Println("Failed to parse request: ", err)
-			c.Close()
+			_ = c.Close()
 			return
 		}
 
@@ -87,7 +87,7 @@ func main() {
 			encoded, err := json.MarshalIndent(req, "", "  ")
 			if err != nil {
 				log.Println("Failed to encode: ", err)
-				c.Close()
+				_ = c.Close()
 			}
 			body = string(encoded)
 		}
@@ -95,7 +95,7 @@ func main() {
 		if err != nil {
 			log.Println("Failed to send response: ", err)
 		}
-		c.Close()
+		_ = c.Close()
 	})
 
 	server.OnClientConnectionClosed(func(c *tcp.Client, err error) {

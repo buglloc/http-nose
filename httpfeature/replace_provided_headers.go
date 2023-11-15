@@ -6,9 +6,9 @@ import (
 )
 
 const (
-	REPLACE_PROVIDED_HEADERS_NO     = 0
-	REPLACE_PROVIDED_HEADERS_YES    = 1
-	REPLACE_PROVIDED_HEADERS_MERGED = 2
+	ReplaceProvidedHeadersNo     = 0
+	ReplaceProvidedHeadersYes    = 1
+	ReplaceProvidedHeadersMerged = 2
 )
 
 type ReplaceProvidedHeaders struct {
@@ -29,11 +29,11 @@ func (f *ReplaceProvidedHeaders) HeadersAction() []string {
 	count := 0
 	for name, action := range f.Headers {
 		var resultAction string
-		if action == REPLACE_PROVIDED_HEADERS_NO {
+		if action == ReplaceProvidedHeadersNo {
 			resultAction = "No"
-		} else if action == REPLACE_PROVIDED_HEADERS_YES {
+		} else if action == ReplaceProvidedHeadersYes {
 			resultAction = "Yes"
-		} else if action == REPLACE_PROVIDED_HEADERS_MERGED {
+		} else if action == ReplaceProvidedHeadersMerged {
 			resultAction = "Merged"
 		} else {
 			resultAction = "Unknown"
@@ -68,17 +68,17 @@ func (f *ReplaceProvidedHeaders) check(name string) int {
 	req.AddHeader(name, testValue)
 	resp, err := f.Client.MakeRequest(req)
 	if err != nil || resp.Status != 200 {
-		return REPLACE_PROVIDED_HEADERS_NO
+		return ReplaceProvidedHeadersNo
 	}
 
 	for _, h := range resp.HeadersSlice(name) {
 		if h.Value == testValue {
-			return REPLACE_PROVIDED_HEADERS_YES
+			return ReplaceProvidedHeadersYes
 		}
 
 		if strings.Contains(h.Value, testValue) {
-			return REPLACE_PROVIDED_HEADERS_MERGED
+			return ReplaceProvidedHeadersMerged
 		}
 	}
-	return REPLACE_PROVIDED_HEADERS_NO
+	return ReplaceProvidedHeadersNo
 }

@@ -6,10 +6,10 @@ import (
 )
 
 const (
-	HEADER_COUNT_OVERFLOW_ACTION_NA         = 0
-	HEADER_COUNT_OVERFLOW_ACTION_DISALLOWED = 1
-	HEADER_COUNT_OVERFLOW_ACTION_CUT        = 2
-	HEADER_COUNT_OVERFLOW_ACTION_BODY       = 3
+	HeaderCountOverflowActionNA         = 0
+	HeaderCountOverflowActionDisallowed = 1
+	HeaderCountOverflowActionCut        = 2
+	HeaderCountOverflowActionBody       = 3
 )
 
 type HeaderCountOverflowAction struct {
@@ -26,19 +26,19 @@ func (f *HeaderCountOverflowAction) Export() interface{} {
 }
 
 func (f *HeaderCountOverflowAction) String() string {
-	if f.Action == HEADER_COUNT_OVERFLOW_ACTION_NA {
+	if f.Action == HeaderCountOverflowActionNA {
 		return "N/A"
 	}
 
-	if f.Action == HEADER_COUNT_OVERFLOW_ACTION_DISALLOWED {
+	if f.Action == HeaderCountOverflowActionDisallowed {
 		return "Disallowed"
 	}
 
-	if f.Action == HEADER_COUNT_OVERFLOW_ACTION_CUT {
+	if f.Action == HeaderCountOverflowActionCut {
 		return "Dropped"
 	}
 
-	if f.Action == HEADER_COUNT_OVERFLOW_ACTION_BODY {
+	if f.Action == HeaderCountOverflowActionBody {
 		return "Leak to body"
 	}
 	return "Unknown"
@@ -46,8 +46,8 @@ func (f *HeaderCountOverflowAction) String() string {
 
 func (f *HeaderCountOverflowAction) Collect() error {
 	max := f.Features.GetMaximumHeadersCount().Count
-	if max == MAX_HEADERS_COUNT {
-		f.Action = HEADER_COUNT_OVERFLOW_ACTION_NA
+	if max == MaxHeadersCount {
+		f.Action = HeaderCountOverflowActionNA
 	} else {
 		f.Action = f.check(max)
 	}
@@ -65,16 +65,16 @@ func (f *HeaderCountOverflowAction) check(maximum int) int {
 
 	resp, err := f.Client.MakeRequest(req)
 	if err != nil || resp.Status != 200 {
-		return HEADER_COUNT_OVERFLOW_ACTION_DISALLOWED
+		return HeaderCountOverflowActionDisallowed
 	}
 
 	if strings.Contains(resp.Body, rand) {
-		return HEADER_COUNT_OVERFLOW_ACTION_BODY
+		return HeaderCountOverflowActionBody
 	}
 
 	for len(resp.HeadersSlice("X-Overflow")) > 0 {
-		return HEADER_COUNT_OVERFLOW_ACTION_NA
+		return HeaderCountOverflowActionNA
 	}
 
-	return HEADER_COUNT_OVERFLOW_ACTION_CUT
+	return HeaderCountOverflowActionCut
 }

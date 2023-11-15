@@ -10,11 +10,11 @@ import (
 // Client holds info about connection
 type Client struct {
 	conn   net.Conn
-	Server *server
+	Server *Server
 }
 
 // TCP server
-type server struct {
+type Server struct {
 	clients                  []*Client
 	address                  string // Address to open connection: localhost:9999
 	timeout                  time.Duration
@@ -49,22 +49,22 @@ func (c *Client) Close() error {
 }
 
 // Called right after server starts listening new client
-func (s *server) OnNewClient(callback func(c *Client)) {
+func (s *Server) OnNewClient(callback func(c *Client)) {
 	s.onNewClientCallback = callback
 }
 
 // Called right after connection closed
-func (s *server) OnClientConnectionClosed(callback func(c *Client, err error)) {
+func (s *Server) OnClientConnectionClosed(callback func(c *Client, err error)) {
 	s.onClientConnectionClosed = callback
 }
 
 // Called when Client receives new message
-func (s *server) OnNewMessage(callback func(c *Client, rd io.Reader)) {
+func (s *Server) OnNewMessage(callback func(c *Client, rd io.Reader)) {
 	s.onNewMessage = callback
 }
 
 // Start network server
-func (s *server) Listen() {
+func (s *Server) Listen() {
 	listener, err := net.Listen("tcp", s.address)
 	if err != nil {
 		log.Fatal("Error starting TCP server. ", err)
@@ -87,12 +87,11 @@ func (s *server) Listen() {
 	}
 }
 
-// Creates new tcp server instance
-func New(address string, timeout int) *server {
+func New(address string, _ int) *Server {
 	log.Println("Creating server with address", address)
-	server := &server{
+	server := &Server{
 		address: address,
-		timeout: time.Duration(5 * time.Second),
+		timeout: 5 * time.Second,
 	}
 
 	server.OnNewClient(func(c *Client) {})

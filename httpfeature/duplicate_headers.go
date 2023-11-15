@@ -5,12 +5,12 @@ import (
 )
 
 const (
-	DUPLICATE_HEADERS_NA         = 0
-	DUPLICATE_HEADERS_DISALLOWED = 1
-	DUPLICATE_HEADERS_ALLOWED    = 2
-	DUPLICATE_HEADERS_MERGED     = 3
-	DUPLICATE_HEADERS_PICK_FIRST = 4
-	DUPLICATE_HEADERS_PICK_LAST  = 5
+	DuplicateHeadersNA         = 0
+	DuplicateHeadersDisallowed = 1
+	DuplicateHeadersAllowed    = 2
+	DuplicateHeadersMerged     = 3
+	DuplicateHeadersPickFirst  = 4
+	DuplicateHeadersPickLast   = 5
 )
 
 type DuplicateHeaders struct {
@@ -27,17 +27,17 @@ func (f *DuplicateHeaders) Export() interface{} {
 }
 
 func (f *DuplicateHeaders) String() string {
-	if f.Action == DUPLICATE_HEADERS_DISALLOWED {
+	if f.Action == DuplicateHeadersDisallowed {
 		return "Disallowed"
-	} else if f.Action == DUPLICATE_HEADERS_ALLOWED {
+	} else if f.Action == DuplicateHeadersAllowed {
 		return "Allowed"
-	} else if f.Action == DUPLICATE_HEADERS_MERGED {
+	} else if f.Action == DuplicateHeadersMerged {
 		return "Merged"
-	} else if f.Action == DUPLICATE_HEADERS_PICK_FIRST {
+	} else if f.Action == DuplicateHeadersPickFirst {
 		return "Pick first"
-	} else if f.Action == DUPLICATE_HEADERS_PICK_LAST {
+	} else if f.Action == DuplicateHeadersPickLast {
 		return "Pick last"
-	} else if f.Action == DUPLICATE_HEADERS_NA {
+	} else if f.Action == DuplicateHeadersNA {
 		return "N/A"
 	}
 	return "Unknown"
@@ -54,7 +54,7 @@ func (f *DuplicateHeaders) check() int {
 	req.AddHeader("X-Foo", "foo2")
 	resp, err := f.Client.MakeRequest(req)
 	if err != nil || resp.Status != 200 {
-		return DUPLICATE_HEADERS_DISALLOWED
+		return DuplicateHeadersDisallowed
 	}
 
 	first := false
@@ -74,13 +74,13 @@ func (f *DuplicateHeaders) check() int {
 	}
 
 	if merged {
-		return DUPLICATE_HEADERS_MERGED
+		return DuplicateHeadersMerged
 	} else if first && second {
-		return DUPLICATE_HEADERS_ALLOWED
+		return DuplicateHeadersAllowed
 	} else if first {
-		return DUPLICATE_HEADERS_PICK_FIRST
+		return DuplicateHeadersPickFirst
 	} else if second {
-		return DUPLICATE_HEADERS_PICK_LAST
+		return DuplicateHeadersPickLast
 	}
-	return DUPLICATE_HEADERS_NA
+	return DuplicateHeadersNA
 }

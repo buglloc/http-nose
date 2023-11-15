@@ -3,6 +3,7 @@ package parser
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"io"
 	"strings"
 
@@ -54,11 +55,14 @@ func (pr *Request) parseRequestLine(line string) error {
 	line = strings.TrimRight(line, "\r\n")
 	splitted := strings.SplitN(line, " ", 3)
 	if len(splitted) == 1 {
-		return errors.New("No path in request line")
+		return errors.New("no path in request line")
 	}
 	pr.Method = splitted[0]
 	pr.RequestURI = splitted[1]
-	pr.parseRequestURI(pr.RequestURI)
+	if err := pr.parseRequestURI(pr.RequestURI); err != nil {
+		return fmt.Errorf("invalid request uri: %w", err)
+	}
+
 	if len(splitted) == 3 {
 		pr.Proto = splitted[2]
 	}
@@ -66,10 +70,10 @@ func (pr *Request) parseRequestLine(line string) error {
 }
 
 func (pr *Request) parseRequestURI(uri string) error {
-	uri_splitted := strings.SplitN(uri, "?", 2)
-	pr.Path = uri_splitted[0]
-	if len(uri_splitted) == 2 {
-		pr.Args = uri_splitted[1]
+	uriSplitted := strings.SplitN(uri, "?", 2)
+	pr.Path = uriSplitted[0]
+	if len(uriSplitted) == 2 {
+		pr.Args = uriSplitted[1]
 	}
 
 	return nil
